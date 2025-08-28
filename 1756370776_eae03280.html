@@ -1,0 +1,809 @@
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>广告关键词分析报告</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/datatables.net-bs5@1.13.4/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background-color: #f8f9fa;
+        }
+        .header {
+            background-color: #343a40;
+            color: white;
+            padding: 20px 0;
+            margin-bottom: 30px;
+        }
+        .nav-tabs {
+            margin-bottom: 20px;
+        }
+        .nav-tabs .nav-link {
+            color: #495057;
+            font-weight: 500;
+        }
+        .nav-tabs .nav-link.active {
+            color: #0d6efd;
+            font-weight: 600;
+        }
+        .stats-card {
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            transition: transform 0.3s;
+        }
+        .stats-card:hover {
+            transform: translateY(-5px);
+        }
+        .stats-card .card-header {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        .stats-value {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+        .table-container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        .table thead th {
+            background-color: #f1f3f5;
+            font-weight: 600;
+        }
+        .badge-low {
+            background-color: #dc3545;
+        }
+        .badge-high {
+            background-color: #198754;
+        }
+        .badge-invalid {
+            background-color: #6c757d;
+        }
+        .footer {
+            background-color: #343a40;
+            color: white;
+            padding: 20px 0;
+            margin-top: 50px;
+            text-align: center;
+        }
+        .performance-grade {
+            font-weight: 600;
+        }
+        .low-performance {
+            color: #dc3545;
+        }
+        .high-performance {
+            color: #198754;
+        }
+        .invalid-reason {
+            color: #6c757d;
+        }
+        .metadata {
+            font-size: 0.85rem;
+            color: #6c757d;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="container">
+            <h1 class="text-center">广告关键词分析报告</h1>
+            <p class="text-center">输入时间: 2025-08-28 08:43:07</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="invalid-tab" data-bs-toggle="tab" data-bs-target="#invalid" type="button" role="tab" aria-controls="invalid" aria-selected="true">无效词</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="low-tab" data-bs-toggle="tab" data-bs-target="#low" type="button" role="tab" aria-controls="low" aria-selected="false">低效词</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="high-tab" data-bs-toggle="tab" data-bs-target="#high" type="button" role="tab" aria-controls="high" aria-selected="false">高效词</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="root-tab" data-bs-toggle="tab" data-bs-target="#root" type="button" role="tab" aria-controls="root" aria-selected="false">词根表</button>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="myTabContent">
+            <!-- 无效词标签页 -->
+            <div class="tab-pane fade show active" id="invalid" role="tabpanel" aria-labelledby="invalid-tab">
+                <div class="row mb-4">
+                    <div class="col-md-4">
+                        <div class="card stats-card">
+                            <div class="card-header bg-danger text-white">总关键词数</div>
+                            <div class="card-body text-center">
+                                <div class="stats-value">1000</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card stats-card">
+                            <div class="card-header bg-warning text-white">无效词数</div>
+                            <div class="card-body text-center">
+                                <div class="stats-value">82</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card stats-card">
+                            <div class="card-header bg-info text-white">无效词占比</div>
+                            <div class="card-body text-center">
+                                <div class="stats-value">8.20%</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <h3>无效词列表</h3>
+                    <p class="metadata">过滤列: Campaign Name, Customer Search Term, Clicks, 7 Day Total Orders (#), 7 Day Conversion Rate, Start Date, End Date, Spend, Total Return on Advertising Spend (ROAS)</p>
+                    <div class="table-responsive">
+                        <table id="invalidTable" class="table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Campaign Name</th>
+                                    <th>Customer Search Term</th>
+                                    <th>Clicks</th>
+                                    <th>7 Day Total Orders (#)</th>
+                                    <th>7 Day Conversion Rate</th>
+                                    <th>Start Date</th>
+                                    <th>End Date</th>
+                                    <th>Spend</th>
+                                    <th>Total ROAS</th>
+                                    <th>Invalid Reason</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Harper 小胡folding-精准</td>
+                                    <td>coavas folding desk</td>
+                                    <td>8</td>
+                                    <td>0</td>
+                                    <td>0%</td>
+                                    <td>2025-07-25</td>
+                                    <td>2025-08-04</td>
+                                    <td>6.12</td>
+                                    <td>0.0</td>
+                                    <td><span class="badge badge-invalid">搜索词高点击无转化</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Harper 小胡folding-精准</td>
+                                    <td>folding desk 35 inch</td>
+                                    <td>7</td>
+                                    <td>0</td>
+                                    <td>0%</td>
+                                    <td>2025-07-26</td>
+                                    <td>2025-08-10</td>
+                                    <td>6.37</td>
+                                    <td>0.0</td>
+                                    <td><span class="badge badge-invalid">搜索词高点击无转化</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Harper 小胡folding-精准</td>
+                                    <td>huuger folding desks for small spaces</td>
+                                    <td>6</td>
+                                    <td>0</td>
+                                    <td>0%</td>
+                                    <td>2025-07-28</td>
+                                    <td>2025-08-05</td>
+                                    <td>5.45</td>
+                                    <td>0.0</td>
+                                    <td><span class="badge badge-invalid">搜索词高点击无转化</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Harper 小胡folding-精准</td>
+                                    <td>white folding desk</td>
+                                    <td>5</td>
+                                    <td>0</td>
+                                    <td>0%</td>
+                                    <td>2025-07-24</td>
+                                    <td>2025-08-05</td>
+                                    <td>4.55</td>
+                                    <td>0.0</td>
+                                    <td><span class="badge badge-invalid">搜索词高点击无转化</span></td>
+                                </tr>
+                                <tr>
+                                    <td>ARCHER OAK foldable</td>
+                                    <td>foldable desk table</td>
+                                    <td>6</td>
+                                    <td>0</td>
+                                    <td>0%</td>
+                                    <td>2025-08-05</td>
+                                    <td>2025-08-16</td>
+                                    <td>2.16</td>
+                                    <td>0.0</td>
+                                    <td><span class="badge badge-invalid">搜索词高点击无转化</span></td>
+                                </tr>
+                                <tr>
+                                    <td>ARCHER OAK foldable</td>
+                                    <td>small foldable desk</td>
+                                    <td>38</td>
+                                    <td>0</td>
+                                    <td>0%</td>
+                                    <td>2025-08-01</td>
+                                    <td>2025-08-21</td>
+                                    <td>13.52</td>
+                                    <td>0.0</td>
+                                    <td><span class="badge badge-invalid">搜索词高点击无转化</span></td>
+                                </tr>
+                                <tr>
+                                    <td>ARCHER OAK foldable</td>
+                                    <td>foldable computer desk</td>
+                                    <td>14</td>
+                                    <td>0</td>
+                                    <td>0%</td>
+                                    <td>2025-07-27</td>
+                                    <td>2025-08-21</td>
+                                    <td>4.88</td>
+                                    <td>0.0</td>
+                                    <td><span class="badge badge-invalid">搜索词高点击无转化</span></td>
+                                </tr>
+                                <tr>
+                                    <td>ARCHER OAK foldable</td>
+                                    <td>foldable table</td>
+                                    <td>17</td>
+                                    <td>0</td>
+                                    <td>0%</td>
+                                    <td>2025-07-25</td>
+                                    <td>2025-08-21</td>
+                                    <td>5.86</td>
+                                    <td>0.0</td>
+                                    <td><span class="badge badge-invalid">搜索词高点击无转化</span></td>
+                                </tr>
+                                <tr>
+                                    <td>ARCHER OAK foldable</td>
+                                    <td>folding computer desk</td>
+                                    <td>30</td>
+                                    <td>0</td>
+                                    <td>0%</td>
+                                    <td>2025-07-23</td>
+                                    <td>2025-08-21</td>
+                                    <td>10.31</td>
+                                    <td>0.0</td>
+                                    <td><span class="badge badge-invalid">搜索词高点击无转化</span></td>
+                                </tr>
+                                <tr>
+                                    <td>ARCHER OAK foldable</td>
+                                    <td>small desk foldable</td>
+                                    <td>17</td>
+                                    <td>0</td>
+                                    <td>0%</td>
+                                    <td>2025-07-23</td>
+                                    <td>2025-08-21</td>
+                                    <td>5.83</td>
+                                    <td>0.0</td>
+                                    <td><span class="badge badge-invalid">搜索词高点击无转化</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 低效词标签页 -->
+            <div class="tab-pane fade" id="low" role="tabpanel" aria-labelledby="low-tab">
+                <div class="row mb-4">
+                    <div class="col-md-4">
+                        <div class="card stats-card">
+                            <div class="card-header bg-primary text-white">总关键词数</div>
+                            <div class="card-body text-center">
+                                <div class="stats-value">1000</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card stats-card">
+                            <div class="card-header bg-warning text-white">低效词数</div>
+                            <div class="card-body text-center">
+                                <div class="stats-value">30</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card stats-card">
+                            <div class="card-header bg-info text-white">低效词占比</div>
+                            <div class="card-body text-center">
+                                <div class="stats-value">3.00%</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <h3>低效词列表</h3>
+                    <p class="metadata">过滤列: Campaign Name, Customer Search Term, Clicks, 7 Day Total Orders (#), 7 Day Conversion Rate, Start Date, End Date, Spend, Total Return on Advertising Spend (ROAS)</p>
+                    <div class="table-responsive">
+                        <table id="lowTable" class="table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Campaign Name</th>
+                                    <th>Customer Search Term</th>
+                                    <th>Clicks</th>
+                                    <th>7 Day Total Orders (#)</th>
+                                    <th>7 Day Conversion Rate</th>
+                                    <th>Start Date</th>
+                                    <th>End Date</th>
+                                    <th>Spend</th>
+                                    <th>Total ROAS</th>
+                                    <th>Performance Grade</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Harper 小胡folding-精准</td>
+                                    <td>folding desk for small space</td>
+                                    <td>1</td>
+                                    <td>2</td>
+                                    <td>2%</td>
+                                    <td>2025-07-29</td>
+                                    <td>2025-07-29</td>
+                                    <td>0.94</td>
+                                    <td>304.20</td>
+                                    <td><span class="performance-grade low-performance">低效</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Here 小胡 其它</td>
+                                    <td>portable filding desk for children ￼</td>
+                                    <td>1</td>
+                                    <td>2</td>
+                                    <td>2%</td>
+                                    <td>2025-08-08</td>
+                                    <td>2025-08-08</td>
+                                    <td>0.41</td>
+                                    <td>292.63</td>
+                                    <td><span class="performance-grade low-performance">低效</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Here 小胡 其它</td>
+                                    <td>desk</td>
+                                    <td>45</td>
+                                    <td>1</td>
+                                    <td>2.2%</td>
+                                    <td>2025-07-23</td>
+                                    <td>2025-08-17</td>
+                                    <td>18.67</td>
+                                    <td>3.21</td>
+                                    <td><span class="performance-grade low-performance">低效</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Harper 小胡folding-精准</td>
+                                    <td>small folding desk</td>
+                                    <td>68</td>
+                                    <td>2</td>
+                                    <td>2.9%</td>
+                                    <td>2025-07-23</td>
+                                    <td>2025-08-10</td>
+                                    <td>63.26</td>
+                                    <td>1.84</td>
+                                    <td><span class="performance-grade low-performance">低效</span></td>
+                                </tr>
+                                <tr>
+                                    <td>harper 小胡-small desk-phrase</td>
+                                    <td>small desk</td>
+                                    <td>32</td>
+                                    <td>1</td>
+                                    <td>3.1%</td>
+                                    <td>2025-07-23</td>
+                                    <td>2025-07-30</td>
+                                    <td>20.16</td>
+                                    <td>2.68</td>
+                                    <td><span class="performance-grade low-performance">低效</span></td>
+                                </tr>
+                                <tr>
+                                    <td>ARCHER OAK foldable</td>
+                                    <td>foldable desks for small spaces</td>
+                                    <td>31</td>
+                                    <td>1</td>
+                                    <td>3.2%</td>
+                                    <td>2025-07-30</td>
+                                    <td>2025-08-21</td>
+                                    <td>11.22</td>
+                                    <td>5.30</td>
+                                    <td><span class="performance-grade low-performance">低效</span></td>
+                                </tr>
+                                <tr>
+                                    <td>电脑桌SP-categories</td>
+                                    <td>b08m3w6sml</td>
+                                    <td>94</td>
+                                    <td>3</td>
+                                    <td>3.2%</td>
+                                    <td>2025-07-23</td>
+                                    <td>2025-08-21</td>
+                                    <td>21.12</td>
+                                    <td>8.09</td>
+                                    <td><span class="performance-grade low-performance">低效</span></td>
+                                </tr>
+                                <tr>
+                                    <td>电脑桌SP-categories</td>
+                                    <td>b0d4pb95r8</td>
+                                    <td>58</td>
+                                    <td>2</td>
+                                    <td>3.4%</td>
+                                    <td>2025-07-24</td>
+                                    <td>2025-08-21</td>
+                                    <td>12.74</td>
+                                    <td>10.36</td>
+                                    <td><span class="performance-grade low-performance">低效</span></td>
+                                </tr>
+                                <tr>
+                                    <td>电脑桌SP-categories</td>
+                                    <td>b0cnlnvrj9</td>
+                                    <td>28</td>
+                                    <td>1</td>
+                                    <td>3.6%</td>
+                                    <td>2025-07-24</td>
+                                    <td>2025-08-20</td>
+                                    <td>6.01</td>
+                                    <td>10.15</td>
+                                    <td><span class="performance-grade low-performance">低效</span></td>
+                                </tr>
+                                <tr>
+                                    <td>ARCHER OAK foldable</td>
+                                    <td>folding table</td>
+                                    <td>24</td>
+                                    <td>1</td>
+                                    <td>4.2%</td>
+                                    <td>2025-07-24</td>
+                                    <td>2025-08-21</td>
+                                    <td>8.22</td>
+                                    <td>8.51</td>
+                                    <td><span class="performance-grade low-performance">低效</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 高效词标签页 -->
+            <div class="tab-pane fade" id="high" role="tabpanel" aria-labelledby="high-tab">
+                <div class="row mb-4">
+                    <div class="col-md-4">
+                        <div class="card stats-card">
+                            <div class="card-header bg-primary text-white">总关键词数</div>
+                            <div class="card-body text-center">
+                                <div class="stats-value">1000</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card stats-card">
+                            <div class="card-header bg-success text-white">高效词数</div>
+                            <div class="card-body text-center">
+                                <div class="stats-value">9</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card stats-card">
+                            <div class="card-header bg-info text-white">高效词占比</div>
+                            <div class="card-body text-center">
+                                <div class="stats-value">0.90%</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <h3>高效词列表</h3>
+                    <p class="metadata">过滤列: Campaign Name, Customer Search Term, Clicks, 7 Day Total Orders (#), 7 Day Conversion Rate, Start Date, End Date, Spend, Total Return on Advertising Spend (ROAS)</p>
+                    <div class="table-responsive">
+                        <table id="highTable" class="table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Campaign Name</th>
+                                    <th>Customer Search Term</th>
+                                    <th>Clicks</th>
+                                    <th>7 Day Total Orders (#)</th>
+                                    <th>7 Day Conversion Rate</th>
+                                    <th>Start Date</th>
+                                    <th>End Date</th>
+                                    <th>Spend</th>
+                                    <th>Total ROAS</th>
+                                    <th>Performance Grade</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Harper 小胡folding-精准</td>
+                                    <td>folding desk table</td>
+                                    <td>11</td>
+                                    <td>2</td>
+                                    <td>18.2%</td>
+                                    <td>2025-07-23</td>
+                                    <td>2025-08-01</td>
+                                    <td>10.76</td>
+                                    <td>13.01</td>
+                                    <td><span class="performance-grade high-performance">高效</span></td>
+                                </tr>
+                                <tr>
+                                    <td>ARCHER OAK foldable</td>
+                                    <td>collapsible desk</td>
+                                    <td>29</td>
+                                    <td>5</td>
+                                    <td>17.2%</td>
+                                    <td>2025-07-23</td>
+                                    <td>2025-08-21</td>
+                                    <td>9.96</td>
+                                    <td>32.76</td>
+                                    <td><span class="performance-grade high-performance">高效</span></td>
+                                </tr>
+                                <tr>
+                                    <td>ARCHER OAK foldable</td>
+                                    <td>small folding desk</td>
+                                    <td>27</td>
+                                    <td>4</td>
+                                    <td>14.8%</td>
+                                    <td>2025-07-25</td>
+                                    <td>2025-08-21</td>
+                                    <td>9.27</td>
+                                    <td>27.29</td>
+                                    <td><span class="performance-grade high-performance">高效</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Here 小胡 其它</td>
+                                    <td>folding computer desk</td>
+                                    <td>10</td>
+                                    <td>2</td>
+                                    <td>20%</td>
+                                    <td>2025-07-28</td>
+                                    <td>2025-08-12</td>
+                                    <td>4.10</td>
+                                    <td>26.34</td>
+                                    <td><span class="performance-grade high-performance">高效</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Here 小胡 其它</td>
+                                    <td>folding desk</td>
+                                    <td>25</td>
+                                    <td>4</td>
+                                    <td>16%</td>
+                                    <td>2025-07-25</td>
+                                    <td>2025-08-21</td>
+                                    <td>10.53</td>
+                                    <td>22.31</td>
+                                    <td><span class="performance-grade high-performance">高效</span></td>
+                                </tr>
+                                <tr>
+                                    <td>harper 小胡-small desk-phrase</td>
+                                    <td>wohomo small desk for bedroom</td>
+                                    <td>9</td>
+                                    <td>4</td>
+                                    <td>44.4%</td>
+                                    <td>2025-07-24</td>
+                                    <td>2025-07-30</td>
+                                    <td>5.67</td>
+                                    <td>38.39</td>
+                                    <td><span class="performance-grade high-performance">高效</span></td>
+                                </tr>
+                                <tr>
+                                    <td>电脑桌SP-categories</td>
+                                    <td>b0dz6twyrz</td>
+                                    <td>30</td>
+                                    <td>6</td>
+                                    <td>20%</td>
+                                    <td>2025-07-24</td>
+                                    <td>2025-08-19</td>
+                                    <td>10.92</td>
+                                    <td>32.22</td>
+                                    <td><span class="performance-grade high-performance">高效</span></td>
+                                </tr>
+                                <tr>
+                                    <td>电脑桌SP-categories</td>
+                                    <td>coavas folding desk</td>
+                                    <td>13</td>
+                                    <td>4</td>
+                                    <td>30.8%</td>
+                                    <td>2025-07-28</td>
+                                    <td>2025-08-21</td>
+                                    <td>5.20</td>
+                                    <td>45.08</td>
+                                    <td><span class="performance-grade high-performance">高效</span></td>
+                                </tr>
+                                <tr>
+                                    <td>电脑桌SP-categories</td>
+                                    <td>b0cqsf8y5n</td>
+                                    <td>14</td>
+                                    <td>2</td>
+                                    <td>14.3%</td>
+                                    <td>2025-07-24</td>
+                                    <td>2025-08-21</td>
+                                    <td>3.10</td>
+                                    <td>40.64</td>
+                                    <td><span class="performance-grade high-performance">高效</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 词根表标签页 -->
+            <div class="tab-pane fade" id="root" role="tabpanel" aria-labelledby="root-tab">
+                <div class="table-container">
+                    <h3>词根统计表</h3>
+                    <p class="metadata">操作: Root split statistics (sorted by 7-Day Total Units descending)</p>
+                    <div class="table-responsive">
+                        <table id="rootTable" class="table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Root</th>
+                                    <th>Clicks</th>
+                                    <th>7 Day Total Units (#)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>desk</td>
+                                    <td>3779</td>
+                                    <td>279</td>
+                                </tr>
+                                <tr>
+                                    <td>folding</td>
+                                    <td>2168</td>
+                                    <td>161</td>
+                                </tr>
+                                <tr>
+                                    <td>foldable</td>
+                                    <td>1363</td>
+                                    <td>109</td>
+                                </tr>
+                                <tr>
+                                    <td>small</td>
+                                    <td>789</td>
+                                    <td>56</td>
+                                </tr>
+                                <tr>
+                                    <td>for</td>
+                                    <td>503</td>
+                                    <td>42</td>
+                                </tr>
+                                <tr>
+                                    <td>b08thczcqc</td>
+                                    <td>237</td>
+                                    <td>28</td>
+                                </tr>
+                                <tr>
+                                    <td>spaces</td>
+                                    <td>325</td>
+                                    <td>22</td>
+                                </tr>
+                                <tr>
+                                    <td>desks</td>
+                                    <td>328</td>
+                                    <td>18</td>
+                                </tr>
+                                <tr>
+                                    <td>b0cy5kgv8g</td>
+                                    <td>116</td>
+                                    <td>10</td>
+                                </tr>
+                                <tr>
+                                    <td>bedroom</td>
+                                    <td>113</td>
+                                    <td>9</td>
+                                </tr>
+                                <tr>
+                                    <td>portable</td>
+                                    <td>82</td>
+                                    <td>8</td>
+                                </tr>
+                                <tr>
+                                    <td>office</td>
+                                    <td>61</td>
+                                    <td>8</td>
+                                </tr>
+                                <tr>
+                                    <td>sorogra</td>
+                                    <td>12</td>
+                                    <td>7</td>
+                                </tr>
+                                <tr>
+                                    <td>collapsible</td>
+                                    <td>67</td>
+                                    <td>7</td>
+                                </tr>
+                                <tr>
+                                    <td>inch</td>
+                                    <td>98</td>
+                                    <td>6</td>
+                                </tr>
+                                <tr>
+                                    <td>coavas</td>
+                                    <td>27</td>
+                                    <td>6</td>
+                                </tr>
+                                <tr>
+                                    <td>computer</td>
+                                    <td>146</td>
+                                    <td>6</td>
+                                </tr>
+                                <tr>
+                                    <td>b0dz6twyrz</td>
+                                    <td>30</td>
+                                    <td>6</td>
+                                </tr>
+                                <tr>
+                                    <td>table</td>
+                                    <td>146</td>
+                                    <td>5</td>
+                                </tr>
+                                <tr>
+                                    <td>space</td>
+                                    <td>12</td>
+                                    <td>5</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class="container">
+            <p>&copy; 2025 广告关键词分析报告 | 生成时间: 2025-08-28 08:43:07</p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/datatables.net@1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/datatables.net-bs5@1.13.4/js/dataTables.bootstrap5.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // 初始化所有表格
+            $('#invalidTable').DataTable({
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/zh.json'
+                },
+                pageLength: 10,
+                order: [[4, 'desc']] // 按点击数降序排列
+            });
+
+            $('#lowTable').DataTable({
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/zh.json'
+                },
+                pageLength: 10,
+                order: [[2, 'desc']] // 按点击数降序排列
+            });
+
+            $('#highTable').DataTable({
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/zh.json'
+                },
+                pageLength: 10,
+                order: [[4, 'desc']] // 按转化率降序排列
+            });
+
+            $('#rootTable').DataTable({
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/zh.json'
+                },
+                pageLength: 10,
+                order: [[2, 'desc']] // 按总订单数降序排列
+            });
+
+            // 标签页切换时重新调整表格大小
+            $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
+                $.fn.dataTable.tables({ visible: true, api: true }).columns.adjust();
+            });
+        });
+    </script>
+</body>
+</html>
+```
