@@ -1,0 +1,1365 @@
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>关键词分析报告</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background-color: #fff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px 0;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            font-size: 28px;
+        }
+        
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+            background-color: #fff;
+            border-radius: 8px 8px 0 0;
+            overflow: hidden;
+        }
+        
+        .tab {
+            padding: 15px 25px;
+            cursor: pointer;
+            background-color: #f8f9fa;
+            border: none;
+            font-size: 16px;
+            font-weight: 500;
+            color: #555;
+            transition: all 0.3s ease;
+            flex: 1;
+            text-align: center;
+        }
+        
+        .tab:hover {
+            background-color: #e9ecef;
+        }
+        
+        .tab.active {
+            background-color: #4a6cf7;
+            color: white;
+        }
+        
+        .tab-content {
+            display: none;
+            background-color: #fff;
+            padding: 25px;
+            border-radius: 0 0 8px 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .stats-container {
+            display: flex;
+            margin-bottom: 25px;
+            gap: 20px;
+        }
+        
+        .stat-card {
+            flex: 1;
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+        
+        .stat-card h3 {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        
+        .stat-card .value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e1e5e9;
+        }
+        
+        th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: #495057;
+            position: sticky;
+            top: 0;
+        }
+        
+        tr:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .low-performance {
+            color: #e74c3c;
+            font-weight: 500;
+        }
+        
+        .high-performance {
+            color: #27ae60;
+            font-weight: 500;
+        }
+        
+        .invalid-reason {
+            color: #e67e22;
+            font-weight: 500;
+        }
+        
+        .metadata {
+            margin-top: 30px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .metadata p {
+            margin-bottom: 5px;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        
+        .section-title {
+            font-size: 20px;
+            margin-bottom: 15px;
+            color: #2c3e50;
+            border-bottom: 2px solid #4a6cf7;
+            padding-bottom: 10px;
+        }
+        
+        .operation {
+            display: inline-block;
+            background-color: #e9ecef;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 14px;
+            margin-bottom: 15px;
+            color: #495057;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>关键词分析报告</h1>
+        </header>
+        
+        <div class="tabs">
+            <button class="tab active" onclick="openTab(event, 'invalid')">无效词</button>
+            <button class="tab" onclick="openTab(event, 'low-performance')">低效词</button>
+            <button class="tab" onclick="openTab(event, 'high-performance')">高效词</button>
+            <button class="tab" onclick="openTab(event, 'root-statistics')">词根表</button>
+        </div>
+        
+        <!-- 无效词标签页 -->
+        <div id="invalid" class="tab-content active">
+            <h2 class="section-title">无效词</h2>
+            <div class="operation">操作: 按无效词标准筛选（仅搜索词级别）</div>
+            
+            <div class="stats-container">
+                <div class="stat-card">
+                    <h3>总项目数</h3>
+                    <div class="value">1000</div>
+                </div>
+                <div class="stat-card">
+                    <h3>无效词数量</h3>
+                    <div class="value">11</div>
+                </div>
+                <div class="stat-card">
+                    <h3>无效词比例</h3>
+                    <div class="value">1.10%</div>
+                </div>
+            </div>
+            
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Campaign Name</th>
+                            <th>Customer Search Term</th>
+                            <th>Clicks</th>
+                            <th>7 Day Total Orders (#)</th>
+                            <th>7 Day Conversion Rate</th>
+                            <th>Date</th>
+                            <th>Spend</th>
+                            <th>Total Return on Advertising Spend (ROAS)</th>
+                            <th>invalid_reason</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>SPK-K-king bed skirt-EX-SS</td>
+                            <td>king bed skirt</td>
+                            <td>5</td>
+                            <td>0</td>
+                            <td>0%</td>
+                            <td>2025-07-08 00:00:00</td>
+                            <td>2.2</td>
+                            <td>0.0</td>
+                            <td class="invalid-reason">搜索词高点击无转化</td>
+                        </tr>
+                        <tr>
+                            <td>SPK-Q14WH-DR SI-EX-GH</td>
+                            <td>queen bed skirt 14 inch drop</td>
+                            <td>5</td>
+                            <td>0</td>
+                            <td>0%</td>
+                            <td>2025-07-04 00:00:00</td>
+                            <td>4.52</td>
+                            <td>0.0</td>
+                            <td class="invalid-reason">搜索词高点击无转化</td>
+                        </tr>
+                        <tr>
+                            <td>1Q14WH-SPK-wrap around bed skirt-精准</td>
+                            <td>wrap around bed skirt</td>
+                            <td>5</td>
+                            <td>0</td>
+                            <td>0%</td>
+                            <td>2025-07-10 00:00:00</td>
+                            <td>2.15</td>
+                            <td>0.0</td>
+                            <td class="invalid-reason">搜索词高点击无转化</td>
+                        </tr>
+                        <tr>
+                            <td>SPK-T32白-场景-精准 -GH</td>
+                            <td>dorm bed skirt</td>
+                            <td>7</td>
+                            <td>0</td>
+                            <td>0%</td>
+                            <td>2025-07-03 00:00:00</td>
+                            <td>1.95</td>
+                            <td>0.0</td>
+                            <td class="invalid-reason">搜索词高点击无转化</td>
+                        </tr>
+                        <tr>
+                            <td>SPK-T32白-场景-精准 -GH</td>
+                            <td>dorm bed skirt</td>
+                            <td>5</td>
+                            <td>0</td>
+                            <td>0%</td>
+                            <td>2025-07-06 00:00:00</td>
+                            <td>1.5</td>
+                            <td>0.0</td>
+                            <td class="invalid-reason">搜索词高点击无转化</td>
+                        </tr>
+                        <tr>
+                            <td>SPK-F14WH-SI-EX-LL</td>
+                            <td>dust ruffle full size bed</td>
+                            <td>5</td>
+                            <td>0</td>
+                            <td>0%</td>
+                            <td>2025-07-07 00:00:00</td>
+                            <td>1.25</td>
+                            <td>0.0</td>
+                            <td class="invalid-reason">搜索词高点击无转化</td>
+                        </tr>
+                        <tr>
+                            <td>SPK-T32白-尺寸2-精准 -SS</td>
+                            <td>twin xl bed skirt dorm</td>
+                            <td>9</td>
+                            <td>0</td>
+                            <td>0%</td>
+                            <td>2025-07-02 00:00:00</td>
+                            <td>2.52</td>
+                            <td>0.0</td>
+                            <td class="invalid-reason">搜索词高点击无转化</td>
+                        </tr>
+                        <tr>
+                            <td>SPK-T32白-尺寸2-精准 -SS</td>
+                            <td>twin xl bed skirt dorm</td>
+                            <td>8</td>
+                            <td>0</td>
+                            <td>0%</td>
+                            <td>2025-07-07 00:00:00</td>
+                            <td>3.29</td>
+                            <td>0.0</td>
+                            <td class="invalid-reason">搜索词高点击无转化</td>
+                        </tr>
+                        <tr>
+                            <td>SPK-T32白-尺寸2-精准 -SS</td>
+                            <td>bed skirt twin xl bed</td>
+                            <td>10</td>
+                            <td>0</td>
+                            <td>0%</td>
+                            <td>2025-07-09 00:00:00</td>
+                            <td>1.51</td>
+                            <td>0.0</td>
+                            <td class="invalid-reason">搜索词高点击无转化</td>
+                        </tr>
+                        <tr>
+                            <td>SPK-Q14PK-CO SI-EX-LL-SLL</td>
+                            <td>pink bed skirt queen</td>
+                            <td>6</td>
+                            <td>0</td>
+                            <td>0%</td>
+                            <td>2025-07-05 00:00:00</td>
+                            <td>2.56</td>
+                            <td>0.0</td>
+                            <td class="invalid-reason">搜索词高点击无转化</td>
+                        </tr>
+                        <tr>
+                            <td>SPK-Q14PK-CO SI-EX-LL-SLL</td>
+                            <td>pink bed skirt queen</td>
+                            <td>9</td>
+                            <td>0</td>
+                            <td>0%</td>
+                            <td>2025-07-07 00:00:00</td>
+                            <td>5.97</td>
+                            <td>0.0</td>
+                            <td class="invalid-reason">搜索词高点击无转化</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="metadata">
+                <p><strong>输入时间:</strong> 2025-08-28 08:52:48</p>
+                <p><strong>过滤列:</strong> Campaign Name, Customer Search Term, Clicks, 7 Day Total Orders (#), 7 Day Conversion Rate, Date, Spend, Total Return on Advertising Spend (ROAS)</p>
+            </div>
+        </div>
+        
+        <!-- 低效词标签页 -->
+        <div id="low-performance" class="tab-content">
+            <h2 class="section-title">低效词</h2>
+            <div class="operation">操作: 低效词筛选</div>
+            
+            <div class="stats-container">
+                <div class="stat-card">
+                    <h3>总项目数</h3>
+                    <div class="value">1000</div>
+                </div>
+                <div class="stat-card">
+                    <h3>低效词数量</h3>
+                    <div class="value">6</div>
+                </div>
+                <div class="stat-card">
+                    <h3>低效词比例</h3>
+                    <div class="value">0.60%</div>
+                </div>
+            </div>
+            
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Campaign Name</th>
+                            <th>Customer Search Term</th>
+                            <th>Clicks</th>
+                            <th>7 Day Total Orders (#)</th>
+                            <th>7 Day Conversion Rate</th>
+                            <th>Date</th>
+                            <th>Spend</th>
+                            <th>Total Return on Advertising Spend (ROAS)</th>
+                            <th>performance_grade</th>
+                            <th>calculated_conversion_rate</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>SPK-F14WH-SI DR 款式-EX-LL</td>
+                            <td>full size bed skirt 14 inch drop wrap around</td>
+                            <td>1</td>
+                            <td>2</td>
+                            <td>2%</td>
+                            <td>2025-07-11 00:00:00</td>
+                            <td>0.87</td>
+                            <td>29.40229885057471</td>
+                            <td class="low-performance">低效</td>
+                            <td>2.00%</td>
+                        </tr>
+                        <tr>
+                            <td>SPK-Q14BK-款式-EX-LL</td>
+                            <td>bed skirt wrap around</td>
+                            <td>1</td>
+                            <td>2</td>
+                            <td>2%</td>
+                            <td>2025-07-11 00:00:00</td>
+                            <td>0.5</td>
+                            <td>50.96</td>
+                            <td class="low-performance">低效</td>
+                            <td>2.00%</td>
+                        </tr>
+                        <tr>
+                            <td>SPK-Q16SR-CO SI-BR-LL</td>
+                            <td>elastic bed skirt queen dark gray</td>
+                            <td>1</td>
+                            <td>2</td>
+                            <td>2%</td>
+                            <td>2025-07-11 00:00:00</td>
+                            <td>1.0</td>
+                            <td>24.53</td>
+                            <td class="low-performance">低效</td>
+                            <td>2.00%</td>
+                        </tr>
+                        <tr>
+                            <td>SPK-02Q16WH-SI 核心词-EX-LL</td>
+                            <td>bedskirts queen size</td>
+                            <td>1</td>
+                            <td>2</td>
+                            <td>2%</td>
+                            <td>2025-07-09 00:00:00</td>
+                            <td>0.09</td>
+                            <td>254.77777777777777</td>
+                            <td class="low-performance">低效</td>
+                            <td>2.00%</td>
+                        </tr>
+                        <tr>
+                            <td>SPK-Q16WH-SI CO-BR1-SS</td>
+                            <td>elastic 16 inch drop queen white bed skirt</td>
+                            <td>1</td>
+                            <td>2</td>
+                            <td>2%</td>
+                            <td>2025-07-11 00:00:00</td>
+                            <td>0.48</td>
+                            <td>49.020833333333336</td>
+                            <td class="low-performance">低效</td>
+                            <td>2.00%</td>
+                        </tr>
+                        <tr>
+                            <td>SPK-T32白-尺寸2-精准 -SS</td>
+                            <td>twin xl bed skirt dorm</td>
+                            <td>13</td>
+                            <td>1</td>
+                            <td>7.7%</td>
+                            <td>2025-07-03 00:00:00</td>
+                            <td>3.7</td>
+                            <td>4.862162162162162</td>
+                            <td class="low-performance">低效</td>
+                            <td>7.70%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="metadata">
+                <p><strong>输入时间:</strong> 2025-08-28 08:52:48</p>
+                <p><strong>过滤列:</strong> Campaign Name, Customer Search Term, Clicks, 7 Day Total Orders (#), 7 Day Conversion Rate, Date, Spend, Total Return on Advertising Spend (ROAS)</p>
+            </div>
+        </div>
+        
+        <!-- 高效词标签页 -->
+        <div id="high-performance" class="tab-content">
+            <h2 class="section-title">高效词</h2>
+            <div class="operation">操作: 按高效词标准筛选</div>
+            
+            <div class="stats-container">
+                <div class="stat-card">
+                    <h3>总项目数</h3>
+                    <div class="value">1000</div>
+                </div>
+                <div class="stat-card">
+                    <h3>高效词数量</h3>
+                    <div class="value">10</div>
+                </div>
+                <div class="stat-card">
+                    <h3>高效词比例</h3>
+                    <div class="value">1.00%</div>
+                </div>
+            </div>
+            
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Campaign Name</th>
+                            <th>Customer Search Term</th>
+                            <th>Clicks</th>
+                            <th>7 Day Total Orders (#)</th>
+                            <th>7 Day Conversion Rate</th>
+                            <th>Date</th>
+                            <th>Spend</th>
+                            <th>Total Return on Advertising Spend (ROAS)</th>
+                            <th>performance_grade</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>SPK-Q14WH-DR SI-EX-GH</td>
+                            <td>queen bed skirt 14 inch drop</td>
+                            <td>9</td>
+                            <td>2</td>
+                            <td>22.2%</td>
+                            <td>2025-07-03 00:00:00</td>
+                            <td>6.55</td>
+                            <td>3.706870229007634</td>
+                            <td class="high-performance">高效</td>
+                        </tr>
+                        <tr>
+                            <td>SPK-T32白-场景-精准 -GH</td>
+                            <td>dorm bed skirt</td>
+                            <td>44</td>
+                            <td>12</td>
+                            <td>27.3%</td>
+                            <td>2025-07-08 00:00:00</td>
+                            <td>14.42</td>
+                            <td>13.209431345353675</td>
+                            <td class="high-performance">高效</td>
+                        </tr>
+                        <tr>
+                            <td>SPK-Q14WH-SI-PH</td>
+                            <td>queen bedskirt</td>
+                            <td>8</td>
+                            <td>2</td>
+                            <td>25%</td>
+                            <td>2025-07-12 00:00:00</td>
+                            <td>12.8</td>
+                            <td>2.1859375</td>
+                            <td class="high-performance">高效</td>
+                        </tr>
+                        <tr>
+                            <td>SPK-F14WH-SI-EX-LL</td>
+                            <td>dust ruffle full size bed</td>
+                            <td>8</td>
+                            <td>2</td>
+                            <td>25%</td>
+                            <td>2025-07-08 00:00:00</td>
+                            <td>2.25</td>
+                            <td>9.768888888888888</td>
+                            <td class="high-performance">高效</td>
+                        </tr>
+                        <tr>
+                            <td>SPK-T32白-尺寸2-精准 -SS</td>
+                            <td>twin xl bed skirt dorm</td>
+                            <td>12</td>
+                            <td>2</td>
+                            <td>16.7%</td>
+                            <td>2025-07-04 00:00:00</td>
+                            <td>3.67</td>
+                            <td>8.822888283378747</td>
+                            <td class="high-performance">高效</td>
+                        </tr>
+                        <tr>
+                            <td>SPK-T32白-尺寸2-精准 -SS</td>
+                            <td>twin xl bed skirt dorm</td>
+                            <td>9</td>
+                            <td>2</td>
+                            <td>22.2%</td>
+                            <td>2025-07-05 00:00:00</td>
+                            <td>3.17</td>
+                            <td>17.365930599369083</td>
+                            <td class="high-performance">高效</td>
+                        </tr>
+                        <tr>
+                            <td>SPK-T32白-尺寸2-精准 -SS</td>
+                            <td>twin xl bed skirt dorm</td>
+                            <td>14</td>
+                            <td>3</td>
+                            <td>21.4%</td>
+                            <td>2025-07-06 00:00:00</td>
+                            <td>3.38</td>
+                            <td>13.00887573964497</td>
+                            <td class="high-performance">高效</td>
+                        </tr>
+                        <tr>
+                            <td>SPK-T32白-尺寸2-精准 -SS</td>
+                            <td>twin xl bed skirt dorm</td>
+                            <td>20</td>
+                            <td>3</td>
+                            <td>15%</td>
+                            <td>2025-07-08 00:00:00</td>
+                            <td>6.76</td>
+                            <td>6.622781065088758</td>
+                            <td class="high-performance">高效</td>
+                        </tr>
+                        <tr>
+                            <td>SPK-T32白-尺寸2-精准 -SS</td>
+                            <td>twin xl bedskirt</td>
+                            <td>12</td>
+                            <td>5</td>
+                            <td>41.7%</td>
+                            <td>2025-07-08 00:00:00</td>
+                            <td>4.03</td>
+                            <td>21.511166253101734</td>
+                            <td class="high-performance">高效</td>
+                        </tr>
+                        <tr>
+                            <td>SPK-Q14PK-CO SI-EX-LL-SLL</td>
+                            <td>pink bed skirt queen</td>
+                            <td>14</td>
+                            <td>2</td>
+                            <td>14.3%</td>
+                            <td>2025-07-09 00:00:00</td>
+                            <td>7.08</td>
+                            <td>3.810734463276836</td>
+                            <td class="high-performance">高效</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="metadata">
+                <p><strong>输入时间:</strong> 2025-08-28 08:52:48</p>
+                <p><strong>过滤列:</strong> Campaign Name, Customer Search Term, Clicks, 7 Day Total Orders (#), 7 Day Conversion Rate, Date, Spend, Total Return on Advertising Spend (ROAS)</p>
+            </div>
+        </div>
+        
+        <!-- 词根表标签页 -->
+        <div id="root-statistics" class="tab-content">
+            <h2 class="section-title">词根表</h2>
+            <div class="operation">操作: Root split statistics (sorted by 7-Day Total Units descending)</div>
+            
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Root</th>
+                            <th>Clicks</th>
+                            <th>7 Day Total Units (#)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>bed</td>
+                            <td>1216</td>
+                            <td>196</td>
+                        </tr>
+                        <tr>
+                            <td>skirt</td>
+                            <td>1057</td>
+                            <td>178</td>
+                        </tr>
+                        <tr>
+                            <td>queen</td>
+                            <td>668</td>
+                            <td>131</td>
+                        </tr>
+                        <tr>
+                            <td>drop</td>
+                            <td>266</td>
+                            <td>59</td>
+                        </tr>
+                        <tr>
+                            <td>inch</td>
+                            <td>274</td>
+                            <td>59</td>
+                        </tr>
+                        <tr>
+                            <td>size</td>
+                            <td>329</td>
+                            <td>57</td>
+                        </tr>
+                        <tr>
+                            <td>white</td>
+                            <td>201</td>
+                            <td>55</td>
+                        </tr>
+                        <tr>
+                            <td>bedskirt</td>
+                            <td>243</td>
+                            <td>50</td>
+                        </tr>
+                        <tr>
+                            <td>twin</td>
+                            <td>357</td>
+                            <td>47</td>
+                        </tr>
+                        <tr>
+                            <td>dorm</td>
+                            <td>250</td>
+                            <td>38</td>
+                        </tr>
+                        <tr>
+                            <td>king</td>
+                            <td>183</td>
+                            <td>29</td>
+                        </tr>
+                        <tr>
+                            <td>gray</td>
+                            <td>92</td>
+                            <td>23</td>
+                        </tr>
+                        <tr>
+                            <td>full</td>
+                            <td>165</td>
+                            <td>23</td>
+                        </tr>
+                        <tr>
+                            <td>wrap</td>
+                            <td>70</td>
+                            <td>18</td>
+                        </tr>
+                        <tr>
+                            <td>around</td>
+                            <td>69</td>
+                            <td>18</td>
+                        </tr>
+                        <tr>
+                            <td>pink</td>
+                            <td>148</td>
+                            <td>18</td>
+                        </tr>
+                        <tr>
+                            <td>ruffle</td>
+                            <td>112</td>
+                            <td>16</td>
+                        </tr>
+                        <tr>
+                            <td>dust</td>
+                            <td>109</td>
+                            <td>15</td>
+                        </tr>
+                        <tr>
+                            <td>skirts</td>
+                            <td>78</td>
+                            <td>11</td>
+                        </tr>
+                        <tr>
+                            <td>elastic</td>
+                            <td>17</td>
+                            <td>9</td>
+                        </tr>
+                        <tr>
+                            <td>cream</td>
+                            <td>54</td>
+                            <td>6</td>
+                        </tr>
+                        <tr>
+                            <td>bedskirts</td>
+                            <td>35</td>
+                            <td>5</td>
+                        </tr>
+                        <tr>
+                            <td>for</td>
+                            <td>38</td>
+                            <td>4</td>
+                        </tr>
+                        <tr>
+                            <td>black</td>
+                            <td>17</td>
+                            <td>3</td>
+                        </tr>
+                        <tr>
+                            <td>ivory</td>
+                            <td>21</td>
+                            <td>3</td>
+                        </tr>
+                        <tr>
+                            <td>skirting</td>
+                            <td>8</td>
+                            <td>2</td>
+                        </tr>
+                        <tr>
+                            <td>dark</td>
+                            <td>6</td>
+                            <td>2</td>
+                        </tr>
+                        <tr>
+                            <td>grey</td>
+                            <td>11</td>
+                            <td>2</td>
+                        </tr>
+                        <tr>
+                            <td>light</td>
+                            <td>7</td>
+                            <td>2</td>
+                        </tr>
+                        <tr>
+                            <td>bedding</td>
+                            <td>1</td>
+                            <td>1</td>
+                        </tr>
+                        <tr>
+                            <td>with</td>
+                            <td>4</td>
+                            <td>1</td>
+                        </tr>
+                        <tr>
+                            <td>bag</td>
+                            <td>1</td>
+                            <td>1</td>
+                        </tr>
+                        <tr>
+                            <td>cotton</td>
+                            <td>7</td>
+                            <td>1</td>
+                        </tr>
+                        <tr>
+                            <td>ruffled</td>
+                            <td>10</td>
+                            <td>1</td>
+                        </tr>
+                        <tr>
+                            <td>b08p4g2rlv</td>
+                            <td>0</td>
+                            <td>1</td>
+                        </tr>
+                        <tr>
+                            <td>bungie</td>
+                            <td>1</td>
+                            <td>1</td>
+                        </tr>
+                        <tr>
+                            <td>cheap</td>
+                            <td>1</td>
+                            <td>1</td>
+                        </tr>
+                        <tr>
+                            <td>kids</td>
+                            <td>1</td>
+                            <td>1</td>
+                        </tr>
+                        <tr>
+                            <td>purple</td>
+                            <td>2</td>
+                            <td>1</td>
+                        </tr>
+                        <tr>
+                            <td>pleated</td>
+                            <td>2</td>
+                            <td>1</td>
+                        </tr>
+                        <tr>
+                            <td>vocander</td>
+                            <td>1</td>
+                            <td>1</td>
+                        </tr>
+                        <tr>
+                            <td>ruffles</td>
+                            <td>10</td>
+                            <td>1</td>
+                        </tr>
+                        <tr>
+                            <td>easy</td>
+                            <td>2</td>
+                            <td>1</td>
+                        </tr>
+                        <tr>
+                            <td>california</td>
+                            <td>3</td>
+                            <td>1</td>
+                        </tr>
+                        <tr>
+                            <td>box</td>
+                            <td>3</td>
+                            <td>1</td>
+                        </tr>
+                        <tr>
+                            <td>spring</td>
+                            <td>3</td>
+                            <td>1</td>
+                        </tr>
+                        <tr>
+                            <td>neutral</td>
+                            <td>1</td>
+                            <td>1</td>
+                        </tr>
+                        <tr>
+                            <td>under</td>
+                            <td>2</td>
+                            <td>1</td>
+                        </tr>
+                        <tr>
+                            <td>nstall</td>
+                            <td>1</td>
+                            <td>1</td>
+                        </tr>
+                        <tr>
+                            <td>polyester</td>
+                            <td>1</td>
+                            <td>1</td>
+                        </tr>
+                        <tr>
+                            <td>lace</td>
+                            <td>1</td>
+                            <td>1</td>
+                        </tr>
+                        <tr>
+                            <td>mattress</td>
+                            <td>1</td>
+                            <td>1</td>
+                        </tr>
+                        <tr>
+                            <td>headboard</td>
+                            <td>4</td>
+                            <td>1</td>
+                        </tr>
+                        <tr>
+                            <td>b08jlp5tgw</td>
+                            <td>4</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>wrinkle</td>
+                            <td>1</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>free</td>
+                            <td>1</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>silver</td>
+                            <td>2</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>biscaynebay</td>
+                            <td>2</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>pinchpleated</td>
+                            <td>1</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>gold</td>
+                            <td>1</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>linen</td>
+                            <td>2</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>green</td>
+                            <td>18</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>sage</td>
+                            <td>1</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>b091knrbym</td>
+                            <td>1</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>b09p33zp2n</td>
+                            <td>1</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>b0d2h5rk6r</td>
+                            <td>1</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>frey</td>
+                            <td>1</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>adjustable</td>
+                            <td>5</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>basics</td>
+                            <td>2</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>amazon</td>
+                            <td>3</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>split</td>
+                            <td>6</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>corners</td>
+                            <td>6</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>long</td>
+                            <td>3</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>cover</td>
+                            <td>2</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>fitted</td>
+                            <td>1</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>oatmeal</td>
+                            <td>1</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>taupe</td>
+                            <td>1</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>frame</td>
+                            <td>2</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>metal</td>
+                            <td>1</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>sets</td>
+                            <td>1</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>and</td>
+                            <td>2</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>b09jwpdwvb</td>
+                            <td>1</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>b08tm64l2r</td>
+                            <td>3</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>colored</td>
+                            <td>5</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>removable</td>
+                            <td>1</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>tan</td>
+                            <td>2</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>eyelet</td>
+                            <td>3</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>dustruffle</td>
+                            <td>1</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>fullsize</td>
+                            <td>1</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>beds</td>
+                            <td>1</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>base</td>
+                            <td>2</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>queens</td>
+                            <td>1</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>soft</td>
+                            <td>1</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>fabric</td>
+                            <td>1</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>skirtgrayqueen</td>
+                            <td>1</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>charcoal</td>
+                            <td>1</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>masculine</td>
+                            <td>1</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>queenking</td>
+                            <td>1</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>striped</td>
+                            <td>1</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>color</td>
+                            <td>3</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>beige</td>
+                            <td>1</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>number</td>
+                            <td>1</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>sleep</td>
+                            <td>1</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>vintage</td>
+                            <td>1</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>lofted</td>
+                            <td>2</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>freshculture</td>
+                            <td>1</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>tulle</td>
+                            <td>3</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>sham</td>
+                            <td>1</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>cgk</td>
+                            <td>1</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>unlimited</td>
+                            <td>1</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>rose</td>
+                            <td>1</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>rimela</td>
+                            <td>1</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>cal</td>
+                            <td>1</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>embroidered</td>
+                            <td>1</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>14in</td>
+                            <td>1</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>best</td>
+                            <td>1</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>back</td>
+                            <td>1</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>stretch</td>
+                            <td>1</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>the</td>
+                            <td>1</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>legs</td>
+                            <td>1</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>spots</td>
+                            <td>1</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>duster</td>
+                            <td>1</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>short</td>
+                            <td>1</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>tsutomi</td>
+                            <td>1</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>18boho</td>
+                            <td>1</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>percale</td>
+                            <td>1</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>trousseau</td>
+                            <td>1</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>crocheted</td>
+                            <td>1</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>hand</td>
+                            <td>1</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>deep</td>
+                            <td>2</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>ski</td>
+                            <td>1</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>preppy</td>
+                            <td>1</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>classic</td>
+                            <td>1</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>16in</td>
+                            <td>1</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>fluffy</td>
+                            <td>1</td>
+                            <td>0</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="metadata">
+                <p><strong>输入时间:</strong> 2025-08-28 08:52:48</p>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function openTab(evt, tabName) {
+            // 隐藏所有标签页内容
+            var tabContents = document.getElementsByClassName("tab-content");
+            for (var i = 0; i < tabContents.length; i++) {
+                tabContents[i].classList.remove("active");
+            }
+            
+            // 移除所有标签按钮的激活状态
+            var tabs = document.getElementsByClassName("tab");
+            for (var i = 0; i < tabs.length; i++) {
+                tabs[i].classList.remove("active");
+            }
+            
+            // 显示当前选中的标签页内容
+            document.getElementById(tabName).classList.add("active");
+            
+            // 激活当前选中的标签按钮
+            evt.currentTarget.classList.add("active");
+        }
+    </script>
+</body>
+</html>
+```
