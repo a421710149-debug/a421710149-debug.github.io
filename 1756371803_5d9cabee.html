@@ -1,0 +1,2273 @@
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>广告关键词分析报告</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- DataTables CSS -->
+    <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .nav-tabs .nav-link {
+            color: #495057;
+            font-weight: 500;
+        }
+        .nav-tabs .nav-link.active {
+            color: #2575fc;
+            font-weight: 600;
+        }
+        .tab-content {
+            padding: 20px;
+        }
+        .stats-card {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .stats-card h5 {
+            color: #495057;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        .stats-table {
+            width: 100%;
+        }
+        .stats-table th {
+            width: 50%;
+            padding: 8px;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .stats-table td {
+            padding: 8px;
+            font-weight: 500;
+        }
+        .table-container {
+            margin-top: 20px;
+        }
+        .metadata {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+            font-size: 0.9rem;
+        }
+        .badge-invalid {
+            background-color: #dc3545;
+        }
+        .badge-high {
+            background-color: #198754;
+        }
+        .badge-low {
+            background-color: #fd7e14;
+        }
+        .dataTables_wrapper .dataTables_filter input {
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            padding: 6px 12px;
+        }
+        .dataTables_wrapper .dataTables_length select {
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            padding: 6px 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="header">
+            <h1><i class="fas fa-chart-line me-2"></i>广告关键词分析报告</h1>
+            <p class="mb-0">关键词表现分析与优化建议</p>
+        </div>
+        
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="invalid-tab" data-bs-toggle="tab" data-bs-target="#invalid" type="button" role="tab" aria-controls="invalid" aria-selected="true">
+                    <i class="fas fa-times-circle me-1"></i> 无效词 <span class="badge bg-danger">42</span>
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="high-tab" data-bs-toggle="tab" data-bs-target="#high" type="button" role="tab" aria-controls="high" aria-selected="false">
+                    <i class="fas fa-star me-1"></i> 高效词 <span class="badge bg-success">1</span>
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="low-tab" data-bs-toggle="tab" data-bs-target="#low" type="button" role="tab" aria-controls="low" aria-selected="false">
+                    <i class="fas fa-exclamation-triangle me-1"></i> 低效词 <span class="badge bg-warning">2</span>
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="root-tab" data-bs-toggle="tab" data-bs-target="#root" type="button" role="tab" aria-controls="root" aria-selected="false">
+                    <i class="fas fa-sitemap me-1"></i> 词根表
+                </button>
+            </li>
+        </ul>
+        
+        <div class="tab-content" id="myTabContent">
+            <!-- 无效词标签页 -->
+            <div class="tab-pane fade show active" id="invalid" role="tabpanel" aria-labelledby="invalid-tab">
+                <h3 class="mb-3"><i class="fas fa-filter me-2"></i>无效词筛选结果</h3>
+                
+                <div class="stats-card">
+                    <h5>统计信息</h5>
+                    <table class="stats-table">
+                        <tr>
+                            <th>总项目数</th>
+                            <td>1000</td>
+                        </tr>
+                        <tr>
+                            <th>无效项目数</th>
+                            <td>42</td>
+                        </tr>
+                        <tr>
+                            <th>无效率</th>
+                            <td>4.20%</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div class="table-container">
+                    <table id="invalidTable" class="table table-striped table-hover table-bordered">
+                        <thead>
+                            <tr>
+                                <th>广告活动名称</th>
+                                <th>客户搜索词</th>
+                                <th>点击量</th>
+                                <th>7天总订单数(#)</th>
+                                <th>7天的转化率</th>
+                                <th>日期</th>
+                                <th>花费</th>
+                                <th>总广告投资回报率 (ROAS)</th>
+                                <th>无效原因</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>SICILIA-SP-ALL-デスク-broad</td>
+                                <td>デスク</td>
+                                <td>6</td>
+                                <td>0</td>
+                                <td>0%</td>
+                                <td>2025-08-14 00:00:00</td>
+                                <td>144.7</td>
+                                <td>0.0</td>
+                                <td><span class="badge badge-invalid">搜索词高点击无转化</span></td>
+                            </tr>
+                            <tr>
+                                <td>SICILIA-SP-ALL-デスク-broad</td>
+                                <td>デスク</td>
+                                <td>11</td>
+                                <td>0</td>
+                                <td>0%</td>
+                                <td>2025-08-15 00:00:00</td>
+                                <td>273.12</td>
+                                <td>0.0</td>
+                                <td><span class="badge badge-invalid">搜索词高点击无转化</span></td>
+                            </tr>
+                            <tr>
+                                <td>SICILIA-SP-ALL-パソコンデスク-broad</td>
+                                <td>パソコンデスク</td>
+                                <td>10</td>
+                                <td>0</td>
+                                <td>0%</td>
+                                <td>2025-07-22 00:00:00</td>
+                                <td>250.0</td>
+                                <td>0.0</td>
+                                <td><span class="badge badge-invalid">搜索词高点击无转化</span></td>
+                            </tr>
+                            <tr>
+                                <td>SICILIA-SP-ALL-パソコンデスク-broad</td>
+                                <td>パソコンデスク</td>
+                                <td>14</td>
+                                <td>0</td>
+                                <td>0%</td>
+                                <td>2025-07-23 00:00:00</td>
+                                <td>344.5</td>
+                                <td>0.0</td>
+                                <td><span class="badge badge-invalid">搜索词高点击无转化</span></td>
+                            </tr>
+                            <tr>
+                                <td>SICILIA-SP-ALL-パソコンデスク-broad</td>
+                                <td>パソコンデスク</td>
+                                <td>11</td>
+                                <td>0</td>
+                                <td>0%</td>
+                                <td>2025-07-24 00:00:00</td>
+                                <td>266.57</td>
+                                <td>0.0</td>
+                                <td><span class="badge badge-invalid">搜索词高点击无转化</span></td>
+                            </tr>
+                            <tr>
+                                <td>SICILIA-SP-ALL-パソコンデスク-broad</td>
+                                <td>パソコンデスク</td>
+                                <td>13</td>
+                                <td>0</td>
+                                <td>0%</td>
+                                <td>2025-07-25 00:00:00</td>
+                                <td>311.01</td>
+                                <td>0.0</td>
+                                <td><span class="badge badge-invalid">搜索词高点击无转化</span></td>
+                            </tr>
+                            <tr>
+                                <td>SICILIA-SP-ALL-パソコンデスク-broad</td>
+                                <td>パソコンデスク</td>
+                                <td>13</td>
+                                <td>0</td>
+                                <td>0%</td>
+                                <td>2025-07-26 00:00:00</td>
+                                <td>325.0</td>
+                                <td>0.0</td>
+                                <td><span class="badge badge-invalid">搜索词高点击无转化</span></td>
+                            </tr>
+                            <tr>
+                                <td>SICILIA-SP-ALL-パソコンデスク-broad</td>
+                                <td>パソコンデスク</td>
+                                <td>10</td>
+                                <td>0</td>
+                                <td>0%</td>
+                                <td>2025-07-27 00:00:00</td>
+                                <td>250.0</td>
+                                <td>0.0</td>
+                                <td><span class="badge badge-invalid">搜索词高点击无转化</span></td>
+                            </tr>
+                            <tr>
+                                <td>SICILIA-SP-ALL-パソコンデスク-broad</td>
+                                <td>パソコンデスク</td>
+                                <td>12</td>
+                                <td>0</td>
+                                <td>0%</td>
+                                <td>2025-07-28 00:00:00</td>
+                                <td>294.6</td>
+                                <td>0.0</td>
+                                <td><span class="badge badge-invalid">搜索词高点击无转化</span></td>
+                            </tr>
+                            <tr>
+                                <td>SICILIA-SP-ALL-パソコンデスク-broad</td>
+                                <td>パソコンデスク</td>
+                                <td>5</td>
+                                <td>0</td>
+                                <td>0%</td>
+                                <td>2025-07-30 00:00:00</td>
+                                <td>115.0</td>
+                                <td>0.0</td>
+                                <td><span class="badge badge-invalid">搜索词高点击无转化</span></td>
+                            </tr>
+                            <tr>
+                                <td>SICILIA-SP-ALL-パソコンデスク-broad</td>
+                                <td>パソコンデスク</td>
+                                <td>5</td>
+                                <td>0</td>
+                                <td>0%</td>
+                                <td>2025-07-31 00:00:00</td>
+                                <td>115.0</td>
+                                <td>0.0</td>
+                                <td><span class="badge badge-invalid">搜索词高点击无转化</span></td>
+                            </tr>
+                            <tr>
+                                <td>SICILIA-SP-ALL-パソコンデスク-broad</td>
+                                <td>パソコンデスク</td>
+                                <td>14</td>
+                                <td>0</td>
+                                <td>0%</td>
+                                <td>2025-08-02 00:00:00</td>
+                                <td>350.0</td>
+                                <td>0.0</td>
+                                <td><span class="badge badge-invalid">搜索词高点击无转化</span></td>
+                            </tr>
+                            <tr>
+                                <td>SICILIA-SP-ALL-パソコンデスク-broad</td>
+                                <td>パソコンデスク</td>
+                                <td>16</td>
+                                <td>0</td>
+                                <td>0%</td>
+                                <td>2025-08-03 00:00:00</td>
+                                <td>400.0</td>
+                                <td>0.0</td>
+                                <td><span class="badge badge-invalid">搜索词高点击无转化</span></td>
+                            </tr>
+                            <tr>
+                                <td>SICILIA-SP-ALL-パソコンデスク-broad</td>
+                                <td>パソコンデスク</td>
+                                <td>13</td>
+                                <td>0</td>
+                                <td>0%</td>
+                                <td>2025-08-04 00:00:00</td>
+                                <td>325.0</td>
+                                <td>0.0</td>
+                                <td><span class="badge badge-invalid">搜索词高点击无转化</span></td>
+                            </tr>
+                            <tr>
+                                <td>SICILIA-SP-ALL-パソコンデスク-broad</td>
+                                <td>パソコンデスク</td>
+                                <td>9</td>
+                                <td>0</td>
+                                <td>0%</td>
+                                <td>2025-08-05 00:00:00</td>
+                                <td>225.0</td>
+                                <td>0.0</td>
+                                <td><span class="badge badge-invalid">搜索词高点击无转化</span></td>
+                            </tr>
+                            <tr>
+                                <td>SICILIA-SP-ALL-パソコンデスク-broad</td>
+                                <td>パソコンデスク</td>
+                                <td>11</td>
+                                <td>0</td>
+                                <td>0%</td>
+                                <td>2025-08-06 00:00:00</td>
+                                <td>275.0</td>
+                                <td>0.0</td>
+                                <td><span class="badge badge-invalid">搜索词高点击无转化</span></td>
+                            </tr>
+                            <tr>
+                                <td>SICILIA-SP-ALL-パソコンデスク-broad</td>
+                                <td>パソコンデスク</td>
+                                <td>11</td>
+                                <td>0</td>
+                                <td>0%</td>
+                                <td>2025-08-07 00:00:00</td>
+                                <td>275.0</td>
+                                <td>0.0</td>
+                                <td><span class="badge badge-invalid">搜索词高点击无转化</span></td>
+                            </tr>
+                            <tr>
+                                <td>SICILIA-SP-ALL-パソコンデスク-broad</td>
+                                <td>パソコンデスク</td>
+                                <td>9</td>
+                                <td>0</td>
+                                <td>0%</td>
+                                <td>2025-08-08 00:00:00</td>
+                                <td>222.8</td>
+                                <td>0.0</td>
+                                <td><span class="badge badge-invalid">搜索词高点击无转化</span></td>
+                            </tr>
+                            <tr>
+                                <td>SICILIA-SP-ALL-パソコンデスク-broad</td>
+                                <td>パソコンデスク</td>
+                                <td>14</td>
+                                <td>0</td>
+                                <td>0%</td>
+                                <td>2025-08-10 00:00:00</td>
+                                <td>345.4</td>
+                                <td>0.0</td>
+                                <td><span class="badge badge-invalid">搜索词高点击无转化</span></td>
+                            </tr>
+                            <tr>
+                                <td>SICILIA-SP-ALL-パソコンデスク-broad</td>
+                                <td>パソコンデスク</td>
+                                <td>11</td>
+                                <td>0</td>
+                                <td>0%</td>
+                                <td>2025-08-11 00:00:00</td>
+                                <td>275.0</td>
+                                <td>0.0</td>
+                                <td><span class="badge badge-invalid">搜索词高点击无转化</span></td>
+                            </tr>
+                            <tr>
+                                <td>SICILIA-SP-ALL-パソコンデスク-broad</td>
+                                <td>パソコンデスク</td>
+                                <td>37</td>
+                                <td>0</td>
+                                <td>0%</td>
+                                <td>2025-08-13 00:00:00</td>
+                                <td>922.87</td>
+                                <td>0.0</td>
+                                <td><span class="badge badge-invalid">搜索词高点击无转化</span></td>
+                            </tr>
+                            <tr>
+                                <td>SICILIA-SP-ALL-パソコンデスク-broad</td>
+                                <td>パソコンデスク</td>
+                                <td>34</td>
+                                <td>0</td>
+                                <td>0%</td>
+                                <td>2025-08-14 00:00:00</td>
+                                <td>839.0</td>
+                                <td>0.0</td>
+                                <td><span class="badge badge-invalid">搜索词高点击无转化</span></td>
+                            </tr>
+                            <tr>
+                                <td>SICILIA-SP-ALL-パソコンデスク-broad</td>
+                                <td>パソコンデスク</td>
+                                <td>32</td>
+                                <td>0</td>
+                                <td>0%</td>
+                                <td>2025-08-15 00:00:00</td>
+                                <td>799.0</td>
+                                <td>0.0</td>
+                                <td><span class="badge badge-invalid">搜索词高点击无转化</span></td>
+                            </tr>
+                            <tr>
+                                <td>SICILIA-SP-ALL-パソコンデスク-broad</td>
+                                <td>パソコンデスク</td>
+                                <td>34</td>
+                                <td>0</td>
+                                <td>0%</td>
+                                <td>2025-08-16 00:00:00</td>
+                                <td>850.0</td>
+                                <td>0.0</td>
+                                <td><span class="badge badge-invalid">搜索词高点击无转化</span></td>
+                            </tr>
+                            <tr>
+                                <td>SICILIA-SP-ALL-パソコンデスク-broad</td>
+                                <td>パソコンデスク</td>
+                                <td>26</td>
+                                <td>0</td>
+                                <td>0%</td>
+                                <td>2025-08-18 00:00:00</td>
+                                <td>638.12</td>
+                                <td>0.0</td>
+                                <td><span class="badge badge-invalid">搜索词高点击无转化</span></td>
+                            </tr>
+                            <tr>
+                                <td>SICILIA-SP-ALL-パソコンデスク-broad</td>
+                                <td>パソコンデスク</td>
+                                <td>8</td>
+                                <td>0</td>
+                                <td>0%</td>
+                                <td>2025-08-19 00:00:00</td>
+                                <td>200.0</td>
+                                <td>0.0</td>
+                                <td><span class="badge badge-invalid">搜索词高点击无转化</span></td>
+                            </tr>
+                            <tr>
+                                <td>SICILIA-SP-ALL-パソコンデスク-broad</td>
+                                <td>パソコンデスク</td>
+                                <td>29</td>
+                                <td>0</td>
+                                <td>0%</td>
+                                <td>2025-08-20 00:00:00</td>
+                                <td>761.11</td>
+                                <td>0.0</td>
+                                <td><span class="badge badge-invalid">搜索词高点击无转化</span></td>
+                            </tr>
+                            <tr>
+                                <td>SICILIA-SP-ALL-パソコンデスク-broad</td>
+                                <td>パソコンデスク コンパクト</td>
+                                <td>5</td>
+                                <td>0</td>
+                                <td>0%</td>
+                                <td>2025-08-02 00:00:00</td>
+                                <td>125.0</td>
+                                <td>0.0</td>
+                                <td><span class="badge badge-invalid">搜索词高点击无转化</span></td>
+                            </tr>
+                            <tr>
+                                <td>SICILIA-SP-ALL-パソコンデスク-broad</td>
+                                <td>パソコンデスク コンパクト</td>
+                                <td>5</td>
+                                <td>0</td>
+                                <td>0%</td>
+                                <td>2025-08-17 00:00:00</td>
+                                <td>125.0</td>
+                                <td>0.0</td>
+                                <td><span class="badge badge-invalid">搜索词高点击无转化</span></td>
+                            </tr>
+                            <tr>
+                                <td>SICILIA-SP-ALL-パソコンデスク-broad</td>
+                                <td>パソコンデスク ヒキダシツキ</td>
+                                <td>5</td>
+                                <td>0</td>
+                                <td>0%</td>
+                                <td>2025-07-25 00:00:00</td>
+                                <td>125.0</td>
+                                <td>0.0</td>
+                                <td><span class="badge badge-invalid">搜索词高点击无转化</span></td>
+                            </tr>
+                            <tr>
+                                <td>SICILIA-SP-ALL-パソコンデスク-broad</td>
+                                <td>パソコンデスク 引き出し付き</td>
+                                <td>5</td>
+                                <td>0</td>
+                                <td>0%</td>
+                                <td>2025-07-27 00:00:00</td>
+                                <td>121.0</td>
+                                <td>0.0</td>
+                                <td><span class="badge badge-invalid">搜索词高点击无转化</span></td>
+                            </tr>
+                            <tr>
+                                <td>SICILIA-SP-ALL-パソコンデスク-broad</td>
+                                <td>パソコンデスク 引き出し付き</td>
+                                <td>5</td>
+                                <td>0</td>
+                                <td>0%</td>
+                                <td>2025-08-02 00:00:00</td>
+                                <td>125.0</td>
+                                <td>0.0</td>
+                                <td><span class="badge badge-invalid">搜索词高点击无转化</span></td>
+                            </tr>
+                            <tr>
+                                <td>SICILIA-SP-ALL-パソコンデスク-broad</td>
+                                <td>パソコンデスク 引き出し付き</td>
+                                <td>6</td>
+                                <td>0</td>
+                                <td>0%</td>
+                                <td>2025-08-03 00:00:00</td>
+                                <td>149.0</td>
+                                <td>0.0</td>
+                                <td><span class="badge badge-invalid">搜索词高点击无转化</span></td>
+                            </tr>
+                            <tr>
+                                <td>ASCOLI ALL-SP-机-Broad-捡漏</td>
+                                <td>机</td>
+                                <td>5</td>
+                                <td>0</td>
+                                <td>0%</td>
+                                <td>2025-08-02 00:00:00</td>
+                                <td>150.8</td>
+                                <td>0.0</td>
+                                <td><span class="badge badge-invalid">搜索词高点击无转化</span></td>
+                            </tr>
+                            <tr>
+                                <td>ASCOLI ALL-SP-机-Broad-捡漏</td>
+                                <td>机</td>
+                                <td>5</td>
+                                <td>0</td>
+                                <td>0%</td>
+                                <td>2025-08-03 00:00:00</td>
+                                <td>133.9</td>
+                                <td>0.0</td>
+                                <td><span class="badge badge-invalid">搜索词高点击无转化</span></td>
+                            </tr>
+                            <tr>
+                                <td>ASCOLI ALL-SP-机-Broad-捡漏</td>
+                                <td>机</td>
+                                <td>5</td>
+                                <td>0</td>
+                                <td>0%</td>
+                                <td>2025-08-10 00:00:00</td>
+                                <td>156.0</td>
+                                <td>0.0</td>
+                                <td><span class="badge badge-invalid">搜索词高点击无转化</span></td>
+                            </tr>
+                            <tr>
+                                <td>ASCOLI ALL-SP-机-Broad-捡漏</td>
+                                <td>机</td>
+                                <td>6</td>
+                                <td>0</td>
+                                <td>0%</td>
+                                <td>2025-08-12 00:00:00</td>
+                                <td>176.8</td>
+                                <td>0.0</td>
+                                <td><span class="badge badge-invalid">搜索词高点击无转化</span></td>
+                            </tr>
+                            <tr>
+                                <td>ASCOLI ALL-SP-机-Broad-捡漏</td>
+                                <td>机</td>
+                                <td>6</td>
+                                <td>0</td>
+                                <td>0%</td>
+                                <td>2025-08-14 00:00:00</td>
+                                <td>163.9</td>
+                                <td>0.0</td>
+                                <td><span class="badge badge-invalid">搜索词高点击无转化</span></td>
+                            </tr>
+                            <tr>
+                                <td>ASCOLI ALL-SP-机-Broad-捡漏</td>
+                                <td>机</td>
+                                <td>5</td>
+                                <td>0</td>
+                                <td>0%</td>
+                                <td>2025-08-15 00:00:00</td>
+                                <td>140.6</td>
+                                <td>0.0</td>
+                                <td><span class="badge badge-invalid">搜索词高点击无转化</span></td>
+                            </tr>
+                            <tr>
+                                <td>ASCOLI ALL-SP-机-Broad-捡漏</td>
+                                <td>机 pcデスク</td>
+                                <td>6</td>
+                                <td>0</td>
+                                <td>0%</td>
+                                <td>2025-08-12 00:00:00</td>
+                                <td>187.2</td>
+                                <td>0.0</td>
+                                <td><span class="badge badge-invalid">搜索词高点击无转化</span></td>
+                            </tr>
+                            <tr>
+                                <td>ASCOLI ALL-SP-机-Broad-捡漏</td>
+                                <td>机 机</td>
+                                <td>6</td>
+                                <td>0</td>
+                                <td>0%</td>
+                                <td>2025-08-15 00:00:00</td>
+                                <td>156.0</td>
+                                <td>0.0</td>
+                                <td><span class="badge badge-invalid">搜索词高点击无转化</span></td>
+                            </tr>
+                            <tr>
+                                <td>ASCOLI ALL-SP-机-Broad-捡漏</td>
+                                <td>机 机</td>
+                                <td>5</td>
+                                <td>0</td>
+                                <td>0%</td>
+                                <td>2025-08-16 00:00:00</td>
+                                <td>126.5</td>
+                                <td>0.0</td>
+                                <td><span class="badge badge-invalid">搜索词高点击无转化</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="metadata">
+                    <strong>元数据:</strong><br>
+                    - 输入时间: 2025-08-28 08:56:49<br>
+                    - 过滤列: 广告活动名称, 客户搜索词, 点击量, 7天总订单数(#), 7天的转化率, 日期, 花费, 总广告投资回报率 (ROAS)
+                </div>
+            </div>
+            
+            <!-- 高效词标签页 -->
+            <div class="tab-pane fade" id="high" role="tabpanel" aria-labelledby="high-tab">
+                <h3 class="mb-3"><i class="fas fa-star me-2"></i>高效词筛选结果</h3>
+                
+                <div class="stats-card">
+                    <h5>统计信息</h5>
+                    <table class="stats-table">
+                        <tr>
+                            <th>总项目数</th>
+                            <td>1000</td>
+                        </tr>
+                        <tr>
+                            <th>高效项目数</th>
+                            <td>1</td>
+                        </tr>
+                        <tr>
+                            <th>高效率</th>
+                            <td>0.10%</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div class="table-container">
+                    <table id="highTable" class="table table-striped table-hover table-bordered">
+                        <thead>
+                            <tr>
+                                <th>广告活动名称</th>
+                                <th>客户搜索词</th>
+                                <th>点击量</th>
+                                <th>7天总订单数(#)</th>
+                                <th>7天的转化率</th>
+                                <th>日期</th>
+                                <th>花费</th>
+                                <th>总广告投资回报率 (ROAS)</th>
+                                <th>表现等级</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>SICILIA-SP-ALL-パソコンデスク-broad</td>
+                                <td>パソコンデスク</td>
+                                <td>20</td>
+                                <td>3</td>
+                                <td>15%</td>
+                                <td>2025-08-12 00:00:00</td>
+                                <td>498.81</td>
+                                <td>27.335057436699344</td>
+                                <td><span class="badge badge-high">高效</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="metadata">
+                    <strong>元数据:</strong><br>
+                    - 输入时间: 2025-08-28 08:56:49<br>
+                    - 过滤列: 广告活动名称, 客户搜索词, 点击量, 7天总订单数(#), 7天的转化率, 日期, 花费, 总广告投资回报率 (ROAS)
+                </div>
+            </div>
+            
+            <!-- 低效词标签页 -->
+            <div class="tab-pane fade" id="low" role="tabpanel" aria-labelledby="low-tab">
+                <h3 class="mb-3"><i class="fas fa-exclamation-triangle me-2"></i>低效词筛选结果</h3>
+                
+                <div class="stats-card">
+                    <h5>统计信息</h5>
+                    <table class="stats-table">
+                        <tr>
+                            <th>总项目数</th>
+                            <td>1000</td>
+                        </tr>
+                        <tr>
+                            <th>低效项目数</th>
+                            <td>2</td>
+                        </tr>
+                        <tr>
+                            <th>低效率</th>
+                            <td>0.20%</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div class="table-container">
+                    <table id="lowTable" class="table table-striped table-hover table-bordered">
+                        <thead>
+                            <tr>
+                                <th>广告活动名称</th>
+                                <th>客户搜索词</th>
+                                <th>点击量</th>
+                                <th>7天总订单数(#)</th>
+                                <th>7天的转化率</th>
+                                <th>日期</th>
+                                <th>花费</th>
+                                <th>总广告投资回报率 (ROAS)</th>
+                                <th>表现等级</th>
+                                <th>计算转化率</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>SICILIA-SP-ALL-パソコンデスク-broad</td>
+                                <td>パソコンデスク</td>
+                                <td>34</td>
+                                <td>1</td>
+                                <td>2.9%</td>
+                                <td>2025-08-17 00:00:00</td>
+                                <td>850.0</td>
+                                <td>6.416470588235294</td>
+                                <td><span class="badge badge-low">低效</span></td>
+                                <td>2.90%</td>
+                            </tr>
+                            <tr>
+                                <td>SICILIA-SP-ALL-パソコンデスク-broad</td>
+                                <td>パソコンデスク</td>
+                                <td>16</td>
+                                <td>1</td>
+                                <td>6.2%</td>
+                                <td>2025-08-09 00:00:00</td>
+                                <td>400.0</td>
+                                <td>9.5425</td>
+                                <td><span class="badge badge-low">低效</span></td>
+                                <td>6.20%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="metadata">
+                    <strong>元数据:</strong><br>
+                    - 输入时间: 2025-08-28 08:56:50<br>
+                    - 过滤列: 广告活动名称, 客户搜索词, 点击量, 7天总订单数(#), 7天的转化率, 日期, 花费, 总广告投资回报率 (ROAS)
+                </div>
+            </div>
+            
+            <!-- 词根表标签页 -->
+            <div class="tab-pane fade" id="root" role="tabpanel" aria-labelledby="root-tab">
+                <h3 class="mb-3"><i class="fas fa-sitemap me-2"></i>词根拆分统计（按销售量降序）</h3>
+                
+                <div class="table-container">
+                    <table id="rootTable" class="table table-striped table-hover table-bordered">
+                        <thead>
+                            <tr>
+                                <th>词根</th>
+                                <th>点击量</th>
+                                <th>7天总销售量(#)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>デスク</td>
+                                <td>326</td>
+                                <td>16</td>
+                            </tr>
+                            <tr>
+                                <td>パソコンデスク</td>
+                                <td>724</td>
+                                <td>13</td>
+                            </tr>
+                            <tr>
+                                <td>wohomo</td>
+                                <td>21</td>
+                                <td>9</td>
+                            </tr>
+                            <tr>
+                                <td>desk</td>
+                                <td>41</td>
+                                <td>4</td>
+                            </tr>
+                            <tr>
+                                <td>小さめ</td>
+                                <td>10</td>
+                                <td>4</td>
+                            </tr>
+                            <tr>
+                                <td>引き出し付き</td>
+                                <td>89</td>
+                                <td>3</td>
+                            </tr>
+                            <tr>
+                                <td>幅70</td>
+                                <td>21</td>
+                                <td>3</td>
+                            </tr>
+                            <tr>
+                                <td>幅80cm</td>
+                                <td>6</td>
+                                <td>3</td>
+                            </tr>
+                            <tr>
+                                <td>コンパクト</td>
+                                <td>98</td>
+                                <td>2</td>
+                            </tr>
+                            <tr>
+                                <td>つくえ</td>
+                                <td>14</td>
+                                <td>2</td>
+                            </tr>
+                            <tr>
+                                <td>折りたたみ</td>
+                                <td>33</td>
+                                <td>2</td>
+                            </tr>
+                            <tr>
+                                <td>pcデスク</td>
+                                <td>70</td>
+                                <td>1</td>
+                            </tr>
+                            <tr>
+                                <td>幅80</td>
+                                <td>29</td>
+                                <td>1</td>
+                            </tr>
+                            <tr>
+                                <td>80cm</td>
+                                <td>19</td>
+                                <td>1</td>
+                            </tr>
+                            <tr>
+                                <td>スリムデスク</td>
+                                <td>4</td>
+                                <td>1</td>
+                            </tr>
+                            <tr>
+                                <td>奥行40</td>
+                                <td>12</td>
+                                <td>1</td>
+                            </tr>
+                            <tr>
+                                <td>小さい</td>
+                                <td>9</td>
+                                <td>1</td>
+                            </tr>
+                            <tr>
+                                <td>幅110</td>
+                                <td>10</td>
+                                <td>1</td>
+                            </tr>
+                            <tr>
+                                <td>収納付きデスク</td>
+                                <td>10</td>
+                                <td>1</td>
+                            </tr>
+                            <tr>
+                                <td>リビングで勉強できる小さな机</td>
+                                <td>1</td>
+                                <td>1</td>
+                            </tr>
+                            <tr>
+                                <td>作業机</td>
+                                <td>14</td>
+                                <td>1</td>
+                            </tr>
+                            <tr>
+                                <td>折り畳み</td>
+                                <td>34</td>
+                                <td>1</td>
+                            </tr>
+                            <tr>
+                                <td>折り畳み机</td>
+                                <td>21</td>
+                                <td>1</td>
+                            </tr>
+                            <tr>
+                                <td>木の机</td>
+                                <td>1</td>
+                                <td>1</td>
+                            </tr>
+                            <tr>
+                                <td>簡易的な机</td>
+                                <td>1</td>
+                                <td>1</td>
+                            </tr>
+                            <tr>
+                                <td>セット</td>
+                                <td>7</td>
+                                <td>1</td>
+                            </tr>
+                            <tr>
+                                <td>チェア付き</td>
+                                <td>7</td>
+                                <td>1</td>
+                            </tr>
+                            <tr>
+                                <td>1人用デスク</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>90cm</td>
+                                <td>3</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>amazon</td>
+                                <td>2</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>emoor</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>おしゃれ</td>
+                                <td>10</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>ikea</td>
+                                <td>5</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>maihail</td>
+                                <td>2</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>nitori</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>72cm</td>
+                                <td>3</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>60cm</td>
+                                <td>4</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>pqnlxln</td>
+                                <td>3</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>シンプル</td>
+                                <td>3</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>80cm幅</td>
+                                <td>20</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>引き出し</td>
+                                <td>34</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>rasik</td>
+                                <td>3</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>奥行45</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>rasikラシク</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>sobuy</td>
+                                <td>2</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>syalen</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>wohomoデスク</td>
+                                <td>2</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>yetom</td>
+                                <td>8</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>奥行50</td>
+                                <td>2</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>幅60</td>
+                                <td>15</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>ですく</td>
+                                <td>2</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>ドレッサーデスク</td>
+                                <td>45</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>アイリス</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>アンティーク</td>
+                                <td>5</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>オシャレデスク</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>オフィスデスク</td>
+                                <td>18</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>ガラス</td>
+                                <td>3</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>ガラスデスク</td>
+                                <td>3</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>クロシオkuroshio</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>ゲームデスク</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>コンソールデスク</td>
+                                <td>3</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>コンパクトデスク</td>
+                                <td>59</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>ヒキダシツキ</td>
+                                <td>36</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>収納付き</td>
+                                <td>9</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>コンパクトデスク幅70</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>コーナーデスク</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>サイドデスク</td>
+                                <td>8</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>幅60cm</td>
+                                <td>5</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>サンワダイレクト</td>
+                                <td>4</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>シンプルワークデスク</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>シンプルデスク</td>
+                                <td>2</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>ホワイト</td>
+                                <td>13</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>奥行30</td>
+                                <td>5</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>ダイリセキ</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>ツクエ</td>
+                                <td>13</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>100</td>
+                                <td>3</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>2人用</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>40cm</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>60cm幅</td>
+                                <td>5</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>70cm</td>
+                                <td>7</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>70cm幅</td>
+                                <td>2</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>かわいい</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>90cm幅</td>
+                                <td>4</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>オフホワイト</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>オリタタミ</td>
+                                <td>10</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>コーナー</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>タクジョウ</td>
+                                <td>3</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>シュウノウ</td>
+                                <td>3</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>スライダー付き</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>スリム</td>
+                                <td>6</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>ニュアンスホワイト</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>ネイル</td>
+                                <td>3</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>40センチ</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>マットブラック</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>リビング</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>一人暮らし</td>
+                                <td>4</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>北欧デザイン</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>多機能</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>奥行30cm</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>奥行35cm</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>奥行60</td>
+                                <td>9</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>奥行70</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>小学生</td>
+                                <td>2</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>幅75</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>幅90</td>
+                                <td>15</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>組み立てサービス</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>組み立て簡単</td>
+                                <td>4</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>高さ100cm</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>高さ75</td>
+                                <td>2</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>高さ75cm</td>
+                                <td>6</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>長さ80</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>高さ80</td>
+                                <td>4</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>デスクひきだし引き出し付き</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>デスクウワオキタナ</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>デスクトップpc</td>
+                                <td>2</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>オキダイ</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>置き台</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>デスクドレッサー</td>
+                                <td>13</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>デスクホワイト引き出し</td>
+                                <td>2</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>デスクワゴン</td>
+                                <td>2</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>カギツキ</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>便利グッズ</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>デスクワーク</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>デスク板</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>デスク白引き出し付き</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>ドウシシャ</td>
+                                <td>3</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>ドレッサー</td>
+                                <td>4</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>デスクのみ</td>
+                                <td>3</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>ナカバヤシ</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>ニトリ</td>
+                                <td>5</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>パソコンですく</td>
+                                <td>4</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>ハイタイプ</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>ロータイプ</td>
+                                <td>8</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>奥行50cm</td>
+                                <td>2</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>アイアン</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>メイクデスク</td>
+                                <td>2</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>モダン</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>リビングデスク</td>
+                                <td>2</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>リモートワーク</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>ローデスク</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>高さ40</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>ワークデスク</td>
+                                <td>3</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>デスクランキング</td>
+                                <td>2</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>人気のドレッサー</td>
+                                <td>2</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>奥行き40cm</td>
+                                <td>4</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>140</td>
+                                <td>2</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>学習デスク</td>
+                                <td>5</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>小さいデスク</td>
+                                <td>2</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>幅105</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>ハイデスク</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>オシャレ</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>引き出しつきデスク</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>引き出し付きデスク</td>
+                                <td>16</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>書斎デスク</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>木製デスク</td>
+                                <td>2</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>可愛い</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>机デスク</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>株式会社白井産業</td>
+                                <td>2</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>無印良品</td>
+                                <td>3</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>白いデスク</td>
+                                <td>3</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>省スペースデスク</td>
+                                <td>3</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>移動デスク</td>
+                                <td>2</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>簡単組立</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>組立不要</td>
+                                <td>2</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>高さ72cm</td>
+                                <td>4</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>高さ73cm</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>高校生</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>黒いデスク</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>burayienta</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>アイリスオーヤマ</td>
+                                <td>5</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>コンパクトパソコンデスク</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>パソコン</td>
+                                <td>2</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>奥行き60</td>
+                                <td>2</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>120cm幅</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>奥行き</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>45cm</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>おすすめ</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>ブラック</td>
+                                <td>2</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>マーブル</td>
+                                <td>2</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>モニターダイツキ</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>ラックツキ</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>奥行き40</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>省スペース</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>高さ70</td>
+                                <td>4</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>モダンデコ</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>ロータイプパソコンデスク</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>引き出し付きパソコンデスク</td>
+                                <td>2</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>1人机</td>
+                                <td>2</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>60センチ幅の机</td>
+                                <td>2</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>70幅</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>在宅ワーク</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>折りたたみ机</td>
+                                <td>33</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>amazon机</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>インテリア</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>カラーボックス</td>
+                                <td>2</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>コンパクトな机</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>コンパクトサイズ机</td>
+                                <td>2</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>コンパクト机</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>シンプル机</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>ダンボール</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>パイプ机</td>
+                                <td>2</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>パイン材</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>高さ100センチ</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>ミシン机</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>リモートワーク用机</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>一人暮らしの机</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>一人用机</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>事務机</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>仕事机</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>勉強つくえ</td>
+                                <td>2</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>子供折りたたみ机</td>
+                                <td>2</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>学校机</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>小さいつくえ</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>小さい机</td>
+                                <td>3</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>小さな机</td>
+                                <td>2</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>小型机</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>折りたたみつくえ</td>
+                                <td>11</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>奥行き30cm</td>
+                                <td>2</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>幅80奥行き55高さ65</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>在宅勤務</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>50cm</td>
+                                <td>2</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>高さ90センチ</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>折畳机</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>木製机87cm机</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>100cm幅</td>
+                                <td>3</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>奥行き50</td>
+                                <td>4</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>110cm幅</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>1人用</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>50cm幅</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>55cm</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>65cm</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>75cm</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>8060</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>奥行き70</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>たち作業</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>ひとり暮らし用</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>奥行き30</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>セール</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>一人用</td>
+                                <td>2</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>作業台</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>高さ74</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>ハイテーブル</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>小さいパソコン作業出来る</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>狭い部屋</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>522cm</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>高さ60cm</td>
+                                <td>2</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>高さ65センチ</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>高さ68cm</td>
+                                <td>2</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>高さ70cm</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>幅42</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>高さ80cm</td>
+                                <td>3</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>高さ85</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>高低音</td>
+                                <td>6</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>机90センチ幅</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>高さ65</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>簡易机</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>組み立て</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>組み立てなし机</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>自習室</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>高85</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>高い机</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>高さ60</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>高さ60センチ</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>高さ70センチ</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>高さ80センチ</td>
+                                <td>2</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>125</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>180cm</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>1人用デスクセット</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>2人用デスク</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>折りたたみデスク</td>
+                                <td>4</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>80センチ幅</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>alucks</td>
+                                <td>2</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>bestier</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>dripex</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>ewin</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>nakabayashi</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>デスク小さい</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>アンティークデスク</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>イケア</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>折り畳みワークデスク</td>
+                                <td>2</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>カインズ</td>
+                                <td>2</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>カインズホーム</td>
+                                <td>2</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>クロシオ</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>ゲーミング</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>ゲーミングですく</td>
+                                <td>1</td>
+                                <td>0</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="metadata">
+                    <strong>元数据:</strong><br>
+                    - 输入时间: 2025-08-28 08:56:49
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    
+    <script>
+        $(document).ready(function() {
+            // 初始化所有表格
+            $('#invalidTable').DataTable({
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/zh.json'
+                },
+                pageLength: 10,
+                order: [[4, 'desc']] // 按点击量降序排序
+            });
+            
+            $('#highTable').DataTable({
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/zh.json'
+                },
+                pageLength: 10,
+                ordering: false // 高效词表格只有一行，禁用排序
+            });
+            
+            $('#lowTable').DataTable({
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/zh.json'
+                },
+                pageLength: 10,
+                ordering: false // 低效词表格只有两行，禁用排序
+            });
+            
+            $('#rootTable').DataTable({
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/zh.json'
+                },
+                pageLength: 25,
+                order: [[2, 'desc']] // 按销售量降序排序
+            });
+        });
+    </script>
+</body>
+</html>
+```
