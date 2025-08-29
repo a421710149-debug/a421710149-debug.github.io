@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>广告关键词表现分析报告</title>
+  <style>
+    body {
+      font-family: "Microsoft YaHei", sans-serif;
+      background: #f9f9f9;
+      color: #333;
+      padding: 20px;
+      line-height: 1.6;
+    }
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+      border-bottom: 2px solid #007acc;
+      padding-bottom: 10px;
+    }
+    h1 {
+      color: #007acc;
+      margin: 0;
+    }
+    .meta {
+      color: #666;
+      font-size: 0.9em;
+    }
+    section {
+      margin-bottom: 40px;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    h2 {
+      color: #d44950;
+      border-left: 4px solid #d44950;
+      padding-left: 10px;
+      margin-top: 0;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 15px 0;
+      font-size: 0.9em;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px 10px;
+      text-align: left;
+      word-wrap: break-word;
+    }
+    th {
+      background-color: #f0f5ff;
+      position: sticky;
+      top: 0;
+      font-weight: bold;
+    }
+    tr:nth-child(even) {
+      background-color: #f8f9fb;
+    }
+    .stats {
+      background: #eef5ff;
+      padding: 12px;
+      border-radius: 6px;
+      margin-bottom: 15px;
+      font-size: 0.95em;
+    }
+    pre {
+      background: #f0f0f0;
+      padding: 10px;
+      border-radius: 4px;
+      overflow-x: auto;
+      font-size: 0.85em;
+    }
+    @media (max-width: 768px) {
+      table, th, td { font-size: 0.8em; }
+      th, td { padding: 6px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <header>
+    <h1>广告关键词表现分析报告</h1>
+    <p class="meta">
+      生成时间: 2025-08-29 03:17:54 | 
+      数据输入时间: 未知
+    </p>
+  </header>
+
+  <!-- 高效词 -->
+  <section>
+    <h2>✅ 高效词（High Performance Keywords）</h2>
+    <p><strong>说明</strong>：转化率高、ROAS 高的关键词</p>
+    <table>
+      <thead>
+        <tr>
+          <th>指标</th><th>值</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>**total_items**</td><td>1000</td></tr><tr>**high_performance_items**</td><td>9</td></tr><tr>**high_performance_rate**</td><td>0.90%</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 低效词 -->
+  <section>
+    <h2>⚠️ 低效词（Low Performance Keywords）</h2>
+    <p><strong>说明</strong>：有转化但 ROAS 偏低或转化率不理想的关键词</p>
+    <table>
+      <thead>
+        <tr>
+          <th>指标</th><th>值</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>**total_items**</td><td>1000</td></tr><tr>**low_performance_items**</td><td>30</td></tr><tr>**low_performance_rate**</td><td>3.00%</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 无效词 -->
+  <section>
+    <h2>❌ 无效词（高点击无转化）</h2>
+    <p><strong>说明</strong>：点击 ≥1，但 7 天订单 = 0，应加入否定关键词</p>
+    <table>
+      <thead>
+        <tr>
+          <th>指标</th><th>值</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>**total_items**</td><td>1000</td></tr><tr>**invalid_items**</td><td>82</td></tr><tr>**invalid_rate**</td><td>8.20%</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 词根统计 -->
+  <section>
+    <h2>🔍 词根统计（Root Frequency & Performance）</h2>
+    <p><strong>说明</strong>：按词根拆分后的点击与销量统计，用于优化关键词组合</p>
+    <table>
+      <thead>
+        <tr>
+          <th>Root</th><th>Clicks</th><th>7 Day Total Units (#)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>desk</td><td>3779</td><td>279</td></tr><tr>folding</td><td>2168</td><td>161</td></tr><tr>foldable</td><td>1363</td><td>109</td></tr><tr>small</td><td>789</td><td>56</td></tr><tr>for</td><td>503</td><td>42</td></tr><tr>b08thczcqc</td><td>237</td><td>28</td></tr><tr>spaces</td><td>325</td><td>22</td></tr><tr>desks</td><td>328</td><td>18</td></tr><tr>b0cy5kgv8g</td><td>116</td><td>10</td></tr><tr>bedroom</td><td>113</td><td>9</td></tr><tr>portable</td><td>82</td><td>8</td></tr><tr>office</td><td>61</td><td>8</td></tr><tr>sorogra</td><td>12</td><td>7</td></tr><tr>collapsible</td><td>67</td><td>7</td></tr><tr>inch</td><td>98</td><td>6</td></tr><tr>coavas</td><td>27</td><td>6</td></tr><tr>computer</td><td>146</td><td>6</td></tr><tr>b0dz6twyrz</td><td>30</td><td>6</td></tr><tr>table</td><td>146</td><td>5</td></tr><tr>space</td><td>12</td><td>5</td></tr><tr>with</td><td>42</td><td>4</td></tr><tr>wohomo</td><td>13</td><td>4</td></tr><tr>work</td><td>34</td><td>4</td></tr><tr>b06xzv3f8f</td><td>37</td><td>4</td></tr><tr>study</td><td>40</td><td>3</td></tr><tr>tier</td><td>7</td><td>3</td></tr><tr>b0cy5jjxs9</td><td>2</td><td>3</td></tr><tr>b08m3w6sml</td><td>94</td><td>3</td></tr><tr>b09tw8rkth</td><td>58</td><td>3</td></tr><tr>foldingdesk</td><td>3</td><td>2</td></tr><tr>home</td><td>24</td><td>2</td></tr><tr>fold</td><td>44</td><td>2</td></tr><tr>children</td><td>4</td><td>2</td></tr><tr>storage</td><td>25</td><td>2</td></tr><tr>filding</td><td>1</td><td>2</td></tr><tr>b0cl9lmvzd</td><td>36</td><td>2</td></tr><tr>b0cy5j1zq7</td><td>4</td><td>2</td></tr><tr>b0cy5jl6wg</td><td>17</td><td>2</td></tr><tr>b0ct7zlnhf</td><td>4</td><td>2</td></tr><tr>b07s7nq7wv</td><td>7</td><td>2</td></tr><tr>b09vyz97gy</td><td>32</td><td>2</td></tr><tr>b0bd5b6xv9</td><td>7</td><td>2</td></tr><tr>b0cgzvjvsn</td><td>18</td><td>2</td></tr><tr>b0clrlgy4n</td><td>34</td><td>2</td></tr><tr>b0cqsf8y5n</td><td>14</td><td>2</td></tr><tr>b0d4pb95r8</td><td>58</td><td>2</td></tr><tr>315</td><td>6</td><td>1</td></tr><tr>white</td><td>18</td><td>1</td></tr><tr>deskcompact</td><td>1</td><td>1</td></tr><tr>solution</td><td>1</td><td>1</td></tr><tr>convenient</td><td>1</td><td>1</td></tr><tr>and</td><td>7</td><td>1</td></tr><tr>compact</td><td>13</td><td>1</td></tr><tr>gezen</td><td>1</td><td>1</td></tr><tr>gray</td><td>3</td><td>1</td></tr><tr>jsb</td><td>2</td><td>1</td></tr><tr>need</td><td>5</td><td>1</td></tr><tr>two</td><td>5</td><td>1</td></tr><tr>monitor</td><td>10</td><td>1</td></tr><tr>stand</td><td>6</td><td>1</td></tr><tr>easy</td><td>6</td><td>1</td></tr><tr>laptop</td><td>28</td><td>1</td></tr><tr>away</td><td>8</td><td>1</td></tr><tr>led</td><td>4</td><td>1</td></tr><tr>homework</td><td>2</td><td>1</td></tr><tr>over</td><td>5</td><td>1</td></tr><tr>bed</td><td>8</td><td>1</td></tr><tr>shelf</td><td>3</td><td>1</td></tr><tr>soroga</td><td>2</td><td>1</td></tr><tr>20x40</td><td>1</td><td>1</td></tr><tr>camper</td><td>1</td><td>1</td></tr><tr>out</td><td>5</td><td>1</td></tr><tr>mini</td><td>6</td><td>1</td></tr><tr>simple</td><td>4</td><td>1</td></tr><tr>workstation</td><td>2</td><td>1</td></tr><tr>shw</td><td>1</td><td>1</td></tr><tr>teacher</td><td>5</td><td>1</td></tr><tr>must</td><td>2</td><td>1</td></tr><tr>haves</td><td>2</td><td>1</td></tr><tr>b0cr419cfb</td><td>3</td><td>1</td></tr><tr>b083s5hr3r</td><td>2</td><td>1</td></tr><tr>b08vj9n49t</td><td>2</td><td>1</td></tr><tr>b08cb925ct</td><td>11</td><td>1</td></tr><tr>b08dvdv1v2</td><td>8</td><td>1</td></tr><tr>b08m998k7j</td><td>1</td><td>1</td></tr><tr>b0bnkrt8tq</td><td>9</td><td>1</td></tr><tr>b0bnl17k27</td><td>10</td><td>1</td></tr><tr>b0bv9r9gn5</td><td>9</td><td>1</td></tr><tr>b0bwjkz6l2</td><td>8</td><td>1</td></tr><tr>b0bydhvhmr</td><td>1</td><td>1</td></tr><tr>b0bysfn7n9</td><td>8</td><td>1</td></tr><tr>b0bz819b19</td><td>11</td><td>1</td></tr><tr>b0c53c7q75</td><td>1</td><td>1</td></tr><tr>b0c8nvj76q</td><td>1</td><td>1</td></tr><tr>b0chrl9nqr</td><td>23</td><td>1</td></tr><tr>b0cjlqmmc9</td><td>9</td><td>1</td></tr><tr>b0ck1wnkvz</td><td>3</td><td>1</td></tr><tr>b0cl23ntnl</td><td>1</td><td>1</td></tr><tr>b0clrgkvt4</td><td>3</td><td>1</td></tr><tr>b0cm5gmwc7</td><td>8</td><td>1</td></tr><tr>b0cnlnvrj9</td><td>28</td><td>1</td></tr><tr>b0cqyqqmh2</td><td>1</td><td>1</td></tr><tr>b0csrdn4rc</td><td>1</td><td>1</td></tr><tr>b0cwn55wrs</td><td>1</td><td>1</td></tr><tr>b0cyfwmwvw</td><td>4</td><td>1</td></tr><tr>b0d4qtyzpd</td><td>19</td><td>1</td></tr><tr>assembly</td><td>22</td><td>0</td></tr><tr>wide</td><td>14</td><td>0</td></tr><tr>394</td><td>2</td><td>0</td></tr><tr>236</td><td>1</td><td>0</td></tr><tr>mobile</td><td>2</td><td>0</td></tr><tr>4nm</td><td>3</td><td>0</td></tr><tr>alawooder</td><td>12</td><td>0</td></tr><tr>best</td><td>2</td><td>0</td></tr><tr>bestoffice</td><td>1</td><td>0</td></tr><tr>black</td><td>12</td><td>0</td></tr><tr>industrial</td><td>1</td><td>0</td></tr><tr>coeztt</td><td>1</td><td>0</td></tr><tr>comhoma</td><td>1</td><td>0</td></tr><tr>covas</td><td>1</td><td>0</td></tr><tr>deep</td><td>6</td><td>0</td></tr><tr>elephance</td><td>9</td><td>0</td></tr><tr>noassembly</td><td>3</td><td>0</td></tr><tr>writing</td><td>20</td><td>0</td></tr><tr>inches</td><td>8</td><td>0</td></tr><tr>45x26</td><td>1</td><td>0</td></tr><tr>espresso</td><td>1</td><td>0</td></tr><tr>kids</td><td>21</td><td>0</td></tr><tr>wash</td><td>1</td><td>0</td></tr><tr>grey</td><td>2</td><td>0</td></tr><tr>high</td><td>2</td><td>0</td></tr><tr>long</td><td>2</td><td>0</td></tr><tr>required</td><td>3</td><td>0</td></tr><tr>prime</td><td>1</td><td>0</td></tr><tr>square</td><td>2</td><td>0</td></tr><tr>tables</td><td>7</td><td>0</td></tr><tr>used</td><td>1</td><td>0</td></tr><tr>wall</td><td>2</td><td>0</td></tr><tr>legs</td><td>2</td><td>0</td></tr><tr>side</td><td>5</td><td>0</td></tr><tr>pocket</td><td>3</td><td>0</td></tr><tr>withstand</td><td>1</td><td>0</td></tr><tr>heat</td><td>1</td><td>0</td></tr><tr>greenforest</td><td>4</td><td>0</td></tr><tr>hdofm</td><td>1</td><td>0</td></tr><tr>huuger</td><td>9</td><td>0</td></tr><tr>large</td><td>5</td><td>0</td></tr><tr>narrow</td><td>2</td><td>0</td></tr><tr>polwkzu</td><td>4</td><td>0</td></tr><tr>frame</td><td>1</td><td>0</td></tr><tr>diy</td><td>1</td><td>0</td></tr><tr>vacation</td><td>1</td><td>0</td></tr><tr>take</td><td>1</td><td>0</td></tr><tr>preassembled</td><td>5</td><td>0</td></tr><tr>rectangle</td><td>1</td><td>0</td></tr><tr>delivery</td><td>1</td><td>0</td></tr><tr>tomorrow</td><td>1</td><td>0</td></tr><tr>solid</td><td>2</td><td>0</td></tr><tr>wood</td><td>6</td><td>0</td></tr><tr>tall</td><td>9</td><td>0</td></tr><tr>472</td><td>1</td><td>0</td></tr><tr>30in</td><td>3</td><td>0</td></tr><tr>affordable</td><td>1</td><td>0</td></tr><tr>amazon</td><td>3</td><td>0</td></tr><tr>beige</td><td>5</td><td>0</td></tr><tr>dorm</td><td>8</td><td>0</td></tr><tr>monitors</td><td>3</td><td>0</td></tr><tr>modern</td><td>3</td><td>0</td></tr><tr>room</td><td>11</td><td>0</td></tr><tr>lightweight</td><td>3</td><td>0</td></tr><tr>metal</td><td>1</td><td>0</td></tr><tr>cosy</td><td>1</td><td>0</td></tr><tr>meuble</td><td>1</td><td>0</td></tr><tr>surface</td><td>1</td><td>0</td></tr><tr>elevated</td><td>1</td><td>0</td></tr><tr>light</td><td>1</td><td>0</td></tr><tr>homcom</td><td>1</td><td>0</td></tr><tr>individual</td><td>1</td><td>0</td></tr><tr>mainstays</td><td>1</td><td>0</td></tr><tr>short</td><td>2</td><td>0</td></tr><tr>moveablefoldable</td><td>1</td><td>0</td></tr><tr>tiny</td><td>3</td><td>0</td></tr><tr>oak</td><td>3</td><td>0</td></tr><tr>weathered</td><td>1</td><td>0</td></tr><tr>wooden</td><td>8</td><td>0</td></tr><tr>apartment</td><td>2</td><td>0</td></tr><tr>gaming</td><td>11</td><td>0</td></tr><tr>couch</td><td>1</td><td>0</td></tr><tr>cute</td><td>1</td><td>0</td></tr><tr>bedrooms</td><td>5</td><td>0</td></tr><tr>desktop</td><td>1</td><td>0</td></tr><tr>art</td><td>1</td><td>0</td></tr><tr>hanging</td><td>1</td><td>0</td></tr><tr>homeschooling</td><td>1</td><td>0</td></tr><tr>lab</td><td>1</td><td>0</td></tr><tr>off</td><td>1</td><td>0</td></tr><tr>reading</td><td>1</td><td>0</td></tr><tr>sofa</td><td>1</td><td>0</td></tr><tr>studying</td><td>1</td><td>0</td></tr><tr>window</td><td>1</td><td>0</td></tr><tr>working</td><td>1</td><td>0</td></tr><tr>foldaway</td><td>5</td><td>0</td></tr><tr>card</td><td>1</td><td>0</td></tr><tr>lights</td><td>1</td><td>0</td></tr><tr>nail</td><td>1</td><td>0</td></tr><tr>task</td><td>1</td><td>0</td></tr><tr>foldingcomputerdesk</td><td>1</td><td>0</td></tr><tr>teens</td><td>4</td><td>0</td></tr><tr>homeschool</td><td>4</td><td>0</td></tr><tr>nice</td><td>1</td><td>0</td></tr><tr>orange</td><td>1</td><td>0</td></tr><tr>living</td><td>3</td><td>0</td></tr><tr>makeup</td><td>1</td><td>0</td></tr><tr>girls</td><td>2</td><td>0</td></tr><tr>thin</td><td>1</td><td>0</td></tr><tr>adults</td><td>2</td><td>0</td></tr><tr>sturdy</td><td>2</td><td>0</td></tr><tr>painting</td><td>2</td><td>0</td></tr><tr>from</td><td>3</td><td>0</td></tr><tr>child</td><td>1</td><td>0</td></tr><tr>21in</td><td>1</td><td>0</td></tr><tr>feet</td><td>1</td><td>0</td></tr><tr>closet</td><td>2</td><td>0</td></tr><tr>depth</td><td>5</td><td>0</td></tr><tr>youth</td><td>1</td><td>0</td></tr><tr>x24</td><td>1</td><td>0</td></tr><tr>32in</td><td>1</td><td>0</td></tr><tr>3222</td><td>1</td><td>0</td></tr><tr>36x18</td><td>1</td><td>0</td></tr><tr>40x20</td><td>1</td><td>0</td></tr><tr>adult</td><td>2</td><td>0</td></tr><tr>brown</td><td>9</td><td>0</td></tr><tr>teen</td><td>4</td><td>0</td></tr><tr>boys</td><td>2</td><td>0</td></tr><tr>carry</td><td>1</td><td>0</td></tr><tr>casaottima</td><td>1</td><td>0</td></tr><tr>cheap</td><td>4</td><td>0</td></tr><tr>classroom</td><td>5</td><td>0</td></tr><tr>student</td><td>7</td><td>0</td></tr><tr>collapsibleofficedesk</td><td>1</td><td>0</td></tr><tr>college</td><td>3</td><td>0</td></tr><tr>cotublr</td><td>1</td><td>0</td></tr><tr>cream</td><td>1</td><td>0</td></tr><tr>dark</td><td>3</td><td>0</td></tr><tr>delta</td><td>1</td><td>0</td></tr><tr>width</td><td>3</td><td>0</td></tr><tr>x21</td><td>1</td><td>0</td></tr><tr>x20</td><td>1</td><td>0</td></tr><tr>3218</td><td>1</td><td>0</td></tr><tr>cair</td><td>1</td><td>0</td></tr><tr>school</td><td>4</td><td>0</td></tr><tr>812</td><td>1</td><td>0</td></tr><tr>disarmable</td><td>1</td><td>0</td></tr><tr>bunk</td><td>1</td><td>0</td></tr><tr>under</td><td>2</td><td>0</td></tr><tr>stuff</td><td>1</td><td>0</td></tr><tr>folds</td><td>1</td><td>0</td></tr><tr>east</td><td>1</td><td>0</td></tr><tr>assemble</td><td>2</td><td>0</td></tr><tr>flex</td><td>1</td><td>0</td></tr><tr>down</td><td>11</td><td>0</td></tr><tr>30x20</td><td>1</td><td>0</td></tr><tr>printer</td><td>1</td><td>0</td></tr><tr>game</td><td>1</td><td>0</td></tr><tr>lap</td><td>1</td><td>0</td></tr><tr>folded</td><td>1</td><td>0</td></tr><tr>priced</td><td>1</td><td>0</td></tr><tr>3000</td><td>1</td><td>0</td></tr><tr>bookcase</td><td>1</td><td>0</td></tr><tr>40x24</td><td>1</td><td>0</td></tr><tr>hooks</td><td>2</td><td>0</td></tr><tr>grayish</td><td>1</td><td>0</td></tr><tr>entryway</td><td>1</td><td>0</td></tr><tr>hallway</td><td>1</td><td>0</td></tr><tr>hideaway</td><td>1</td><td>0</td></tr><tr>kealive</td><td>1</td><td>0</td></tr><tr>regular</td><td>1</td><td>0</td></tr><tr>lufeiya</td><td>1</td><td>0</td></tr><tr>characters</td><td>1</td><td>0</td></tr><tr>mrironstone</td><td>1</td><td>0</td></tr><tr>multifunction</td><td>1</td><td>0</td></tr><tr>murphy</td><td>2</td><td>0</td></tr><tr>natural</td><td>1</td><td>0</td></tr><tr>tools</td><td>1</td><td>0</td></tr><tr>odk</td><td>1</td><td>0</td></tr><tr>twin</td><td>1</td><td>0</td></tr><tr>the</td><td>2</td><td>0</td></tr><tr>top</td><td>1</td><td>0</td></tr><tr>pamray</td><td>10</td><td>0</td></tr><tr>pop</td><td>1</td><td>0</td></tr><tr>case</td><td>1</td><td>0</td></tr><tr>pickup</td><td>1</td><td>0</td></tr><tr>laptops</td><td>3</td><td>0</td></tr><tr>big</td><td>1</td><td>0</td></tr><tr>manicure</td><td>1</td><td>0</td></tr><tr>purple</td><td>1</td><td>0</td></tr><tr>assembled</td><td>1</td><td>0</td></tr><tr>ready</td><td>1</td><td>0</td></tr><tr>red</td><td>2</td><td>0</td></tr><tr>color</td><td>1</td><td>0</td></tr><tr>roda</td><td>1</td><td>0</td></tr><tr>roller</td><td>1</td><td>0</td></tr><tr>sewing</td><td>1</td><td>0</td></tr><tr>childrens</td><td>1</td><td>0</td></tr><tr>shrek</td><td>1</td><td>0</td></tr><tr>sack</td><td>1</td><td>0</td></tr><tr>slim</td><td>1</td><td>0</td></tr><tr>3032</td><td>2</td><td>0</td></tr><tr>lighetwegiht</td><td>1</td><td>0</td></tr><tr>395</td><td>1</td><td>0</td></tr><tr>folder</td><td>1</td><td>0</td></tr><tr>medical</td><td>1</td><td>0</td></tr><tr>saver</td><td>1</td><td>0</td></tr><tr>saving</td><td>2</td><td>0</td></tr><tr>convertable</td><td>1</td><td>0</td></tr><tr>hair</td><td>1</td><td>0</td></tr><tr>movablewith</td><td>1</td><td>0</td></tr><tr>can</td><td>1</td><td>0</td></tr><tr>that</td><td>1</td><td>0</td></tr><tr>overnight</td><td>1</td><td>0</td></tr><tr>boy</td><td>1</td><td>0</td></tr><tr>transportable</td><td>1</td><td>0</td></tr><tr>travel</td><td>3</td><td>0</td></tr><tr>traveling</td><td>1</td><td>0</td></tr><tr>vari</td><td>1</td><td>0</td></tr><tr>cubicubi</td><td>4</td><td>0</td></tr><tr>cubiker</td><td>1</td><td>0</td></tr><tr>dumos</td><td>8</td><td>0</td></tr><tr>paylesshere</td><td>6</td><td>0</td></tr><tr>rustic</td><td>1</td><td>0</td></tr><tr>4844</td><td>1</td><td>0</td></tr><tr>sweetcrispy</td><td>1</td><td>0</td></tr><tr>washed</td><td>1</td><td>0</td></tr><tr>b0cl9khdrk</td><td>2</td><td>0</td></tr><tr>b0cl9lsk45</td><td>1</td><td>0</td></tr><tr>b0cqtd9rq9</td><td>3</td><td>0</td></tr><tr>b0cr41np68</td><td>2</td><td>0</td></tr><tr>b0cy5clj1q</td><td>1</td><td>0</td></tr><tr>b0cy5mt9h6</td><td>2</td><td>0</td></tr><tr>b0dfcw94m6</td><td>1</td><td>0</td></tr><tr>b0dfcwhbsz</td><td>2</td><td>0</td></tr><tr>b0dz6v5w2g</td><td>1</td><td>0</td></tr><tr>b0876prdgn</td><td>4</td><td>0</td></tr><tr>b087c3vkd5</td><td>9</td><td>0</td></tr><tr>b08978ytdd</td><td>6</td><td>0</td></tr><tr>b08qfm5pxf</td><td>1</td><td>0</td></tr><tr>b0cssyy27j</td><td>1</td><td>0</td></tr><tr>b0csszfhv6</td><td>2</td><td>0</td></tr><tr>b0cst1d2b9</td><td>1</td><td>0</td></tr><tr>b0cst1tgx1</td><td>1</td><td>0</td></tr><tr>b0d3th5jtg</td><td>1</td><td>0</td></tr><tr>shelves</td><td>1</td><td>0</td></tr><tr>adjustable</td><td>1</td><td>0</td></tr><tr>b001bbi37o</td><td>1</td><td>0</td></tr><tr>b0056nqv40</td><td>2</td><td>0</td></tr><tr>b005xvyv2y</td><td>1</td><td>0</td></tr><tr>b00bk31jew</td><td>1</td><td>0</td></tr><tr>b00e3v3yx2</td><td>4</td><td>0</td></tr><tr>b00uv7aqqk</td><td>3</td><td>0</td></tr><tr>b01grl45ii</td><td>1</td><td>0</td></tr><tr>b075f9ktqw</td><td>1</td><td>0</td></tr><tr>b07fdjt6dc</td><td>1</td><td>0</td></tr><tr>b07fkwt7hs</td><td>4</td><td>0</td></tr><tr>b07pcmwy9w</td><td>2</td><td>0</td></tr><tr>b07q33bdkc</td><td>5</td><td>0</td></tr><tr>b07qwpd6zr</td><td>2</td><td>0</td></tr><tr>b07xnxjwlc</td><td>1</td><td>0</td></tr><tr>b081rfk5jm</td><td>1</td><td>0</td></tr><tr>b081vc3tdq</td><td>2</td><td>0</td></tr><tr>b0823b125h</td><td>1</td><td>0</td></tr><tr>b082w2hz89</td><td>1</td><td>0</td></tr><tr>b085ztkcnw</td><td>1</td><td>0</td></tr><tr>b087c75p7g</td><td>1</td><td>0</td></tr><tr>b088t4jnqh</td><td>9</td><td>0</td></tr><tr>b08b1gq7s9</td><td>2</td><td>0</td></tr><tr>b08bj2qrm9</td><td>2</td><td>0</td></tr><tr>b08bldfj4g</td><td>1</td><td>0</td></tr><tr>b08l17dctn</td><td>1</td><td>0</td></tr><tr>b08ld9z3zd</td><td>6</td><td>0</td></tr><tr>b08nsxp9ky</td><td>5</td><td>0</td></tr><tr>b08p87clrv</td><td>3</td><td>0</td></tr><tr>b08pdtsy7d</td><td>1</td><td>0</td></tr><tr>b08qln9kqq</td><td>1</td><td>0</td></tr><tr>b08s2pg1tk</td><td>2</td><td>0</td></tr><tr>b08tlyg6r3</td><td>19</td><td>0</td></tr><tr>b08xq4fqtp</td><td>2</td><td>0</td></tr><tr>b08ywyvts4</td><td>3</td><td>0</td></tr><tr>b092ct6vkl</td><td>1</td><td>0</td></tr><tr>b092hvg2pl</td><td>11</td><td>0</td></tr><tr>b092hvnqq4</td><td>1</td><td>0</td></tr><tr>b092hwhswx</td><td>6</td><td>0</td></tr><tr>b093xljzrv</td><td>2</td><td>0</td></tr><tr>b0948xrkvz</td><td>1</td><td>0</td></tr><tr>b095vw57zt</td><td>1</td><td>0</td></tr><tr>b095yh581d</td><td>2</td><td>0</td></tr><tr>b098njlpkw</td><td>1</td><td>0</td></tr><tr>b09b1mcn45</td><td>1</td><td>0</td></tr><tr>b09d6m8bhl</td><td>1</td><td>0</td></tr><tr>b09d7925rb</td><td>5</td><td>0</td></tr><tr>b09dpj8dx7</td><td>12</td><td>0</td></tr><tr>b09kcppycr</td><td>2</td><td>0</td></tr><tr>b09kv8wx5z</td><td>1</td><td>0</td></tr><tr>b09q8wjctm</td><td>4</td><td>0</td></tr><tr>b09tw72gq9</td><td>16</td><td>0</td></tr><tr>b09tw8kpgb</td><td>1</td><td>0</td></tr><tr>b09tw8z7r5</td><td>8</td><td>0</td></tr><tr>b09v24ls2x</td><td>4</td><td>0</td></tr><tr>b09v24n1jb</td><td>15</td><td>0</td></tr><tr>b09v49jrq6</td><td>1</td><td>0</td></tr><tr>b09vyzfjm6</td><td>2</td><td>0</td></tr><tr>b09vyzm53b</td><td>1</td><td>0</td></tr><tr>b09w2hkc37</td><td>3</td><td>0</td></tr><tr>b0b4952mfx</td><td>1</td><td>0</td></tr><tr>b0b5wv14ff</td><td>1</td><td>0</td></tr><tr>b0b62jktj3</td><td>2</td><td>0</td></tr><tr>b0b87r15r7</td><td>1</td><td>0</td></tr><tr>b0bcpm7l1m</td><td>1</td><td>0</td></tr><tr>b0bd3nwzfm</td><td>3</td><td>0</td></tr><tr>b0bj2l53x7</td><td>1</td><td>0</td></tr><tr>b0bn549119</td><td>4</td><td>0</td></tr><tr>b0bn54yrkr</td><td>1</td><td>0</td></tr><tr>b0bnl233ms</td><td>1</td><td>0</td></tr><tr>b0bnnbjpmh</td><td>1</td><td>0</td></tr><tr>b0bqj738f6</td><td>2</td><td>0</td></tr><tr>b0br3dm8hj</td><td>2</td><td>0</td></tr><tr>b0brd42vth</td><td>1</td><td>0</td></tr><tr>b0brnd83jg</td><td>3</td><td>0</td></tr><tr>b0bs6flgv2</td><td>7</td><td>0</td></tr><tr>b0bs6fxsb2</td><td>3</td><td>0</td></tr><tr>b0btsg6l1m</td><td>2</td><td>0</td></tr><tr>b0bv9s9v3m</td><td>1</td><td>0</td></tr><tr>b0bvqkpnyy</td><td>1</td><td>0</td></tr><tr>b0bvr3rklz</td><td>8</td><td>0</td></tr><tr>b0bwjmlykj</td><td>2</td><td>0</td></tr><tr>b0bx55qtgt</td><td>1</td><td>0</td></tr><tr>b0bx8tq4tz</td><td>4</td><td>0</td></tr><tr>b0byd1chhg</td><td>1</td><td>0</td></tr><tr>b0bz12pt1z</td><td>2</td><td>0</td></tr><tr>b0bz7gxm4m</td><td>8</td><td>0</td></tr><tr>b0bz8cy6z8</td><td>3</td><td>0</td></tr><tr>b0bzvm6djr</td><td>1</td><td>0</td></tr><tr>b0bzvx58wf</td><td>31</td><td>0</td></tr><tr>b0c1nt6rk5</td><td>1</td><td>0</td></tr><tr>b0c1yh1glq</td><td>3</td><td>0</td></tr><tr>b0c2yxzgq2</td><td>2</td><td>0</td></tr><tr>b0c2yykm4x</td><td>1</td><td>0</td></tr><tr>b0c2yyyryf</td><td>4</td><td>0</td></tr><tr>b0c2z4fnpg</td><td>7</td><td>0</td></tr><tr>b0c4gzdp5g</td><td>2</td><td>0</td></tr><tr>b0c4h1c4z1</td><td>2</td><td>0</td></tr><tr>b0c4h1vsmx</td><td>1</td><td>0</td></tr><tr>b0c4t79s1r</td><td>1</td><td>0</td></tr><tr>b0c52rf9ym</td><td>2</td><td>0</td></tr><tr>b0c5hvxs86</td><td>3</td><td>0</td></tr><tr>b0c5hwx6wm</td><td>1</td><td>0</td></tr><tr>b0c5hxv18w</td><td>1</td><td>0</td></tr><tr>b0c6mcg6kv</td><td>2</td><td>0</td></tr><tr>b0c8mbn3dp</td><td>4</td><td>0</td></tr><tr>b0c96g95mp</td><td>4</td><td>0</td></tr><tr>b0c9pfrj3q</td><td>5</td><td>0</td></tr><tr>b0c9zqbx5x</td><td>1</td><td>0</td></tr><tr>b0cb32mkvp</td><td>11</td><td>0</td></tr><tr>b0cb5fxtlc</td><td>1</td><td>0</td></tr><tr>b0cb5g1bhx</td><td>12</td><td>0</td></tr><tr>b0cb5h4jt1</td><td>17</td><td>0</td></tr><tr>b0cbcb4vj3</td><td>2</td><td>0</td></tr><tr>b0cbccfmty</td><td>1</td><td>0</td></tr><tr>b0cbx1v9gr</td><td>2</td><td>0</td></tr><tr>b0cbx2tj1y</td><td>2</td><td>0</td></tr><tr>b0ccvffj6z</td><td>10</td><td>0</td></tr><tr>b0cd7h6bc3</td><td>5</td><td>0</td></tr><tr>b0cdc6tynq</td><td>2</td><td>0</td></tr><tr>b0cdlgtp5x</td><td>1</td><td>0</td></tr><tr>b0cdvymt1x</td><td>2</td><td>0</td></tr><tr>b0cg68qls3</td><td>1</td><td>0</td></tr><tr>b0cg992fkd</td><td>1</td><td>0</td></tr><tr>b0cg9g9vgk</td><td>3</td><td>0</td></tr><tr>b0cglwj3r8</td><td>3</td><td>0</td></tr><tr>b0chj8qhbb</td><td>4</td><td>0</td></tr><tr>b0chrnxvmr</td><td>1</td><td>0</td></tr><tr>b0chrp43b2</td><td>4</td><td>0</td></tr><tr>b0chw216kf</td><td>2</td><td>0</td></tr><tr>b0cj83fbd9</td><td>7</td><td>0</td></tr><tr>b0cj8qxb2h</td><td>6</td><td>0</td></tr><tr>b0cj8rb157</td><td>9</td><td>0</td></tr><tr>b0cj8rthth</td><td>4</td><td>0</td></tr><tr>b0cj8ssp2q</td><td>14</td><td>0</td></tr><tr>b0cjlhjh61</td><td>3</td><td>0</td></tr><tr>b0cjlk5tkl</td><td>5</td><td>0</td></tr><tr>b0cjlw5g85</td><td>7</td><td>0</td></tr><tr>b0cjrqqmrz</td><td>1</td><td>0</td></tr><tr>b0cjybc9rk</td><td>1</td><td>0</td></tr><tr>b0ck21xbcg</td><td>2</td><td>0</td></tr><tr>b0ck8h31y1</td><td>1</td><td>0</td></tr><tr>b0cljglxqq</td><td>9</td><td>0</td></tr><tr>b0cm5j8zfb</td><td>10</td><td>0</td></tr><tr>b0cm5q2qkb</td><td>1</td><td>0</td></tr><tr>b0cmcm4p42</td><td>1</td><td>0</td></tr><tr>b0cnlmm2jx</td><td>1</td><td>0</td></tr><tr>b0cnvxstp8</td><td>1</td><td>0</td></tr><tr>b0cpp5l3dp</td><td>7</td><td>0</td></tr><tr>b0cq4q4s3b</td><td>20</td><td>0</td></tr><tr>b0cq591rxs</td><td>1</td><td>0</td></tr><tr>b0cqc2ntgg</td><td>2</td><td>0</td></tr><tr>b0cqc3rvmv</td><td>5</td><td>0</td></tr><tr>b0cqlw32sc</td><td>3</td><td>0</td></tr><tr>b0cqyrdb5w</td><td>6</td><td>0</td></tr><tr>b0cr1cm8jk</td><td>2</td><td>0</td></tr><tr>b0cr1gtlqh</td><td>1</td><td>0</td></tr><tr>b0crhdpjg6</td><td>9</td><td>0</td></tr><tr>b0crkr5mb5</td><td>1</td><td>0</td></tr><tr>b0crkscjw5</td><td>2</td><td>0</td></tr><tr>b0crkx8zcg</td><td>2</td><td>0</td></tr><tr>b0cryh3kmd</td><td>4</td><td>0</td></tr><tr>b0cs3k9cwc</td><td>4</td><td>0</td></tr><tr>b0cs3lvkdn</td><td>1</td><td>0</td></tr><tr>b0cs6lpgdt</td><td>5</td><td>0</td></tr><tr>b0csd61vzc</td><td>1</td><td>0</td></tr><tr>b0cssms62x</td><td>2</td><td>0</td></tr><tr>b0ct5qlb13</td><td>4</td><td>0</td></tr><tr>b0cthhqdnj</td><td>1</td><td>0</td></tr><tr>b0ctjgkmkj</td><td>1</td><td>0</td></tr><tr>b0ctjkfnqd</td><td>1</td><td>0</td></tr><tr>b0ctjxdwj3</td><td>5</td><td>0</td></tr><tr>b0ctqb8v78</td><td>1</td><td>0</td></tr><tr>b0cv822y5b</td><td>3</td><td>0</td></tr><tr>b0cw1tfztr</td><td>9</td><td>0</td></tr><tr>b0cwkdlfmn</td><td>6</td><td>0</td></tr><tr>b0cwkrb51k</td><td>1</td><td>0</td></tr><tr>b0cwlgpx9d</td><td>1</td><td>0</td></tr><tr>b0cwpk4cyl</td><td>6</td><td>0</td></tr><tr>b0cwqjv7d1</td><td>1</td><td>0</td></tr><tr>b0cxpk48df</td><td>1</td><td>0</td></tr><tr>b0cxpkspz4</td><td>1</td><td>0</td></tr><tr>b0cxpm1hh1</td><td>4</td><td>0</td></tr><tr>b0cygfzm89</td><td>9</td><td>0</td></tr><tr>b0cypxd5c5</td><td>1</td><td>0</td></tr><tr>b0cyswysq4</td><td>12</td><td>0</td></tr><tr>b0czklhdrq</td><td>1</td><td>0</td></tr><tr>b0czpdmqyx</td><td>7</td><td>0</td></tr><tr>b0d12mmcd5</td><td>2</td><td>0</td></tr><tr>b0d1fqrzsb</td><td>3</td><td>0</td></tr><tr>b0d1qdph81</td><td>2</td><td>0</td></tr><tr>b0d1yhvzx3</td><td>4</td><td>0</td></tr><tr>b0d25hpsk9</td><td>10</td><td>0</td></tr><tr>b0d25t9w19</td><td>1</td><td>0</td></tr><tr>b0d264hk9k</td><td>5</td><td>0</td></tr><tr>b0d26cftql</td><td>3</td><td>0</td></tr><tr>b0d26f2y6l</td><td>2</td><td>0</td></tr><tr>b0d28q85lt</td><td>6</td><td>0</td></tr><tr>b0d28tywy4</td><td>4</td><td>0</td></tr><tr>b0d29b51dd</td><td>7</td><td>0</td></tr><tr>b0d2hv6613</td><td>5</td><td>0</td></tr><tr>b0d2hw7rbf</td><td>1</td><td>0</td></tr><tr>b0d2hybv9k</td><td>1</td><td>0</td></tr><tr>b0d2l1m4nb</td><td>1</td><td>0</td></tr><tr>b0d3h35lmy</td><td>2</td><td>0</td></tr><tr>b0d3lklwjg</td><td>10</td><td>0</td></tr><tr>b0d3t4j7cf</td><td>1</td><td>0</td></tr><tr>b0d498n3mr</td><td>1</td><td>0</td></tr><tr>b0d4hv9g4v</td><td>3</td><td>0</td></tr><tr>b0d4pcd2px</td><td>11</td><td>0</td></tr><tr>b0d4yxgts6</td><td>2</td><td>0</td></tr><tr>b0d57svhbg</td><td>1</td><td>0</td></tr><tr>b0d5bmbs88</td><td>2</td><td>0</td></tr><tr>b0d5bmfk9s</td><td>4</td><td>0</td></tr><tr>b0d5bn5xq7</td><td>1</td><td>0</td></tr><tr>b0d5hh53sr</td><td>1</td><td>0</td></tr><tr>b0d66jt5qp</td><td>4</td><td>0</td></tr><tr>b0d69jlsj5</td><td>2</td><td>0</td></tr><tr>b0d6k16wc8</td><td>3</td><td>0</td></tr><tr>b0d6k9glw4</td><td>4</td><td>0</td></tr><tr>b0d73ltglr</td><td>1</td><td>0</td></tr><tr>b0d73prcwd</td><td>2</td><td>0</td></tr><tr>b0d7c8bs68</td><td>1</td><td>0</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <footer style="text-align: center; margin-top: 50px; color: #888; font-size: 0.9em;">
+    &copy; 2025 广告数据分析系统 | 数据来源：Amazon 广告报表
+  </footer>
+
+</div>
+
+</body>
+</html>
