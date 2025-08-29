@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8" />
+    <title>关键词分析报告</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+        table {
+            margin: auto;
+            border-collapse: collapse;
+            width: 90%;
+            max-width: 1200px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #1e90ff;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .invalid { background-color: rgba(255, 0, 0, 0.1); }
+        .low { background-color: rgba(255, 255, 0, 0.1); }
+        .high { background-color: rgba(0, 255, 0, 0.1); }
+        .total-stats {
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .footer {
+            margin-top: 30px;
+            font-size: 14px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+
+<div class="total-stats">总分析关键词数：1000，对应率：100%</div>
+
+<table>
+    <thead>
+        <tr>
+            <th>广告活动名称</th>
+            <th>客户搜索词</th>
+            <th>点击量</th>
+            <th>7天总订单数(#)</th>
+            <th>7天的转化率</th>
+            <th>开始日期</th>
+            <th>结束日期</th>
+            <th>花费</th>
+            <th>总广告投资回报率 (ROAS)</th>
+            <th>标签</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- 无效词 -->
+        <tr class="invalid">
+            <td>SPK_Q15 SG_bed skirting queen size_HT_Exact_FB_0.7_SS</td>
+            <td>bed skirting queen size</td>
+            <td>7</td>
+            <td>0</td>
+            <td>0%</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>搜索词高点击无转化</td>
+        </tr>
+        <tr class="invalid">
+            <td>SPK_bed skirt_Exact_FB_SS</td>
+            <td>bed skirt</td>
+            <td>8</td>
+            <td>0</td>
+            <td>0%</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>搜索词高点击无转化</td>
+        </tr>
+        <tr class="invalid">
+            <td>SPK_Queen_尺寸大词_低竞价_DN</td>
+            <td>bed skirting queen size</td>
+            <td>6</td>
+            <td>0</td>
+            <td>0%</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>搜索词高点击无转化</td>
+        </tr>
+        <tr class="invalid">
+            <td>SPK_Q15 WH_white bed skirt_HT_Exact_FB_SS_1.3</td>
+            <td>white bed skirt</td>
+            <td>5</td>
+            <td>0</td>
+            <td>0%</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>搜索词高点击无转化</td>
+        </tr>
+        <tr class="invalid">
+            <td>SPK_Queen_尺寸大词_低竞价_DN</td>
+            <td>bed skirting queen size</td>
+            <td>5</td>
+            <td>0</td>
+            <td>0%</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>搜索词高点击无转化</td>
+        </tr>
+        <tr class="invalid">
+            <td>SPK_bed skirt_Exact_FB_SS</td>
+            <td>bed skirts</td>
+            <td>9</td>
+            <td>0</td>
+            <td>0%</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>搜索词高点击无转化</td>
+        </tr>
+        <tr class="invalid">
+            <td>SPK_Q15 SG_bed skirting queen size_HT_Exact_FB_0.7_SS</td>
+            <td>bed skirting queen size</td>
+            <td>11</td>
+            <td>0</td>
+            <td>0%</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>搜索词高点击无转化</td>
+        </tr>
+        <tr class="invalid">
+            <td>SPK_15Q_SG_尺寸词_LT_Exact_FB_SS</td>
+            <td>bed skirting queen size</td>
+            <td>5</td>
+            <td>0</td>
+            <td>0%</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>搜索词高点击无转化</td>
+        </tr>
+        
+        <!-- 高效词 -->
+        <tr class="high">
+            <td>SPK_Q15 WH_bed skirting queen size_HT_Exact_FB_SS_1.2</td>
+            <td>bed skirting queen size</td>
+            <td>19</td>
+            <td>3</td>
+            <td>15.8%</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>高效</td>
+        </tr>
+        <tr class="high">
+            <td>SPK__Q15 WH__颜色词__FB__Exact__低流 B8-15</td>
+            <td>white bed skirt queen</td>
+            <td>9</td>
+            <td>5</td>
+            <td>55.6%</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>高效</td>
+        </tr>
+        <tr class="high">
+            <td>SPK_Q15 WH_bed skirting queen size_HT_Exact_FB_SS_1.2</td>
+            <td>bed skirting queen size</td>
+            <td>13</td>
+            <td>3</td>
+            <td>23.1%</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>高效</td>
+        </tr>
+        <tr class="high">
+            <td>SPK_Q15 SG_bed skirting queen size_HT_Exact_FB_0.7_SS</td>
+            <td>bed skirting queen size</td>
+            <td>9</td>
+            <td>3</td>
+            <td>33.3%</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>高效</td>
+        </tr>
+        <tr class="high">
+            <td>SPK_Q15 WH_bed skirting queen size_HT_Exact_FB_SS_1.2</td>
+            <td>bed skirting queen size</td>
+            <td>12</td>
+            <td>2</td>
+            <td>16.7%</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>高效</td>
+        </tr>
+        <tr class="high">
+            <td>SPK_Q15 WH_bed skirting queen size_HT_Exact_FB_SS_1.2</td>
+            <td>bed skirting queen size</td>
+            <td>12</td>
+            <td>3</td>
+            <td>25%</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>高效</td>
+        </tr>
+        <tr class="high">
+            <td>SPK_Q15 SG_bed skirting queen size_HT_Exact_FB_0.7_SS</td>
+            <td>bed skirting queen size</td>
+            <td>12</td>
+            <td>2</td>
+            <td>16.7%</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>高效</td>
+        </tr>
+        <tr class="high">
+            <td>SPK_Q15 WH_bed skirting queen size_HT_Exact_FB_SS_1.2</td>
+            <td>bed skirting queen size</td>
+            <td>12</td>
+            <td>2</td>
+            <td>16.7%</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>高效</td>
+        </tr>
+        <tr class="high">
+            <td>SPK_Q15 WH_bed skirting queen size_HT_Exact_FB_SS_1.2</td>
+            <td>bed skirting queen size</td>
+            <td>11</td>
+            <td>2</td>
+            <td>18.2%</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>高效</td>
+        </tr>
+        <tr class="high">
+            <td>SPK_Q15 WH_bed skirting queen size_HT_Exact_FB_SS_1.2</td>
+            <td>bed skirting queen size</td>
+            <td>9</td>
+            <td>3</td>
+            <td>33.3%</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>高效</td>
+        </tr>
+        <tr class="high">
+            <td>SPK_Q15 WH_white queen bed skirt_HT_Exact_FB_抢位_SS</td>
+            <td>white queen bed skirt</td>
+            <td>8</td>
+            <td>2</td>
+            <td>25%</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>高效</td>
+        </tr>
+        <tr class="high">
+            <td>SPK_Q15 WH_white bed skirt_HT_Exact_FB_SS_1.3</td>
+            <td>white bed skirt</td>
+            <td>13</td>
+            <td>2</td>
+            <td>15.4%</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>高效</td>
+        </tr>
+        <tr class="high">
+            <td>SPK_Q15 WH_bed skirting queen size_HT_Exact_FB_SS_1.2</td>
+            <td>bed skirting queen size</td>
+            <td>11</td>
+            <td>4</td>
+            <td>36.4%</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>高效</td>
+        </tr>
+        
+        <!-- 低效词 -->
+        <tr class="low">
+            <td>SPA__Q15 SG__Lo&Cl__DN</td>
+            <td>seafoam bed skirt queen</td>
+            <td>1</td>
+            <td>2</td>
+            <td>2%</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>低效</td>
+        </tr>
+        <tr class="low">
+            <td>SPK__Q15 WH__颜色词__FB__Exact__低流 B8-15</td>
+            <td>white bedskirts queen size</td>
+            <td>1</td>
+            <td>2</td>
+            <td>2%</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>低效</td>
+        </tr>
+        <tr class="low">
+            <td>SPK_K15 SG_颜色 尺寸_1_Exact_LT_FB_SS</td>
+            <td>grey dust ruffle king</td>
+            <td>1</td>
+            <td>2</td>
+            <td>2%</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>低效</td>
+        </tr>
+        <tr class="low">
+            <td>SPK_bed skirt_Exact_FB_SS</td>
+            <td>bed skirts</td>
+            <td>1</td>
+            <td>2</td>
+            <td>2%</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>低效</td>
+        </tr>
+        <tr class="low">
+            <td>SPK_bed skirt_HT_Broad_UD_SS_0.1</td>
+            <td>southern plantar bed skirt</td>
+            <td>1</td>
+            <td>2</td>
+            <td>2%</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>低效</td>
+        </tr>
+        <tr class="low">
+            <td>SPK_Q15 WH_bed skirting queen size_HT_Exact_FB_SS_1.2</td>
+            <td>bed skirting queen size</td>
+            <td>14</td>
+            <td>1</td>
+            <td>7.1%</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>低效</td>
+        </tr>
+    </tbody>
+</table>
+
+<div class="total-stats">总分析关键词数：1000，对应率：100%</div>
+
+<script>
+    function redirectToPage(pageName) {
+        alert(`跳转到 ${pageName} 页面`);
+    }
+
+    // 添加页面跳转逻辑
+    document.addEventListener("DOMContentLoaded", function() {
+        const tables = document.querySelectorAll('table');
+        tables.forEach(table => {
+            const rows = table.querySelectorAll('tr');
+            rows.forEach(row => {
+                row.addEventListener('click', () => {
+                    if (!row.classList.contains('total-stats')) {
+                        const keyword = row.cells[1].textContent;
+                        redirectToPage(keyword);
+                    }
+                });
+            });
+        });
+    });
+</script>
+
+<div class="footer">
+    数据来源：2025-08-29 01:37:27 | 点击任意行可跳转
+</div>
+
+</body>
+</html>
