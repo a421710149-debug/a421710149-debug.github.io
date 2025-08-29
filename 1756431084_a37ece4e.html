@@ -1,0 +1,63 @@
+```html
+<!DOCTYPE html><html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>关键词分析</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .container {
+            display: flex;
+            justify-content: space-around;
+        }
+        .table-container {
+            width: 30%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="table-container">
+            <h2>无效词</h2>
+            <button onclick="location.href='#invalid_keywords_filtered'">查看详细</button>
+            <!-- 表格内容 -->
+        </div>
+        <div class="table-container">
+            <h2>低效词</h2>
+            <button onclick="location.href='#low_performance_keywords'">查看详细</button>
+            <!-- 表格内容 -->
+        </div>
+        <div class="table-container">
+            <h2>高效词</h2>
+            <button onclick="location.href='#high_performance_keywords'">查看详细</button>
+            <!-- 表格内容 -->
+        </div>
+        <div class="table-container">
+            <h2>词根表</h2>
+            <button onclick="location.href='#root_statistics'">查看详细</button>
+            <!-- 表格内容 -->
+        </div>
+    </div>
+
+    <script>
+        // JavaScript代码可以在这里添加
+    </script>
+</body>
+</html>
+```
+
+这个HTML代码创建了一个简单的页面布局，包含四个按钮，每个按钮对应一个不同的关键词类别，并且可以通过点击按钮跳转到相应的详细页面。你可以将实际的数据表格内容插入到每个按钮对应的`<div>`中。
