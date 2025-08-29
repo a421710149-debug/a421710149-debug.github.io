@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>广告关键词表现分析报告</title>
+  <style>
+    body {
+      font-family: "Microsoft YaHei", sans-serif;
+      background: #f9f9f9;
+      color: #333;
+      padding: 20px;
+      line-height: 1.6;
+    }
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+      border-bottom: 2px solid #007acc;
+      padding-bottom: 10px;
+    }
+    h1 {
+      color: #007acc;
+      margin: 0;
+    }
+    .meta {
+      color: #666;
+      font-size: 0.9em;
+    }
+    section {
+      margin-bottom: 40px;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    h2 {
+      color: #d44950;
+      border-left: 4px solid #d44950;
+      padding-left: 10px;
+      margin-top: 0;
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 10px;
+      margin: 15px 0;
+      background: #eef5ff;
+      padding: 15px;
+      border-radius: 6px;
+    }
+    .stat-item {
+      font-size: 0.95em;
+    }
+    .stat-item strong {
+      color: #007acc;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 15px 0;
+      font-size: 0.9em;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px 10px;
+      text-align: left;
+      word-wrap: break-word;
+    }
+    th {
+      background-color: #f0f5ff;
+      position: sticky;
+      top: 0;
+      font-weight: bold;
+    }
+    tr:nth-child(even) {
+      background-color: #f8f9fb;
+    }
+    pre {
+      background: #f0f0f0;
+      padding: 10px;
+      border-radius: 4px;
+      overflow-x: auto;
+      font-size: 0.8em;
+    }
+    @media (max-width: 768px) {
+      table, th, td { font-size: 0.8em; }
+      th, td { padding: 6px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <header>
+    <h1>广告关键词表现分析报告</h1>
+    <p class="meta">
+      生成时间: 2025-08-29 06:09:26 | 
+      数据输入时间: 未知
+    </p>
+  </header>
+
+  <!-- 高效词 -->
+  <section>
+    <h2>✅ 高效词（High Performance Keywords）</h2>
+    <p><strong>说明</strong>：转化率高、ROAS 高的关键词</p>
+    
+    <!-- 统计信息 -->
+    <div class="stats-grid">
+      <div class="stat-item">总条目: <strong>1000</strong></div>
+      <div class="stat-item">高效词数量: <strong>9</strong></div>
+      <div class="stat-item">高效占比: <strong>0.90%</strong></div>
+    </div>
+
+    <!-- 表格数据 -->
+    <p><strong>⚠️ 提示：未能提取 高效词 表格数据</strong></p><pre>高效词 区块内容未解析成功，请检查输入格式</pre>
+  </section>
+
+  <!-- 低效词 -->
+  <section>
+    <h2>⚠️ 低效词（Low Performance Keywords）</h2>
+    <p><strong>说明</strong>：有转化但 ROAS 偏低或转化率不理想的关键词</p>
+    
+    <!-- 统计信息 -->
+    <div class="stats-grid">
+      <div class="stat-item">总条目: <strong>1000</strong></div>
+      <div class="stat-item">低效词数量: <strong>30</strong></div>
+      <div class="stat-item">低效占比: <strong>3.00%</strong></div>
+    </div>
+
+    <!-- 表格数据 -->
+    <p><strong>⚠️ 提示：未能提取 低效词 表格数据</strong></p><pre>低效词 区块内容未解析成功，请检查输入格式</pre>
+  </section>
+
+  <!-- 无效词 -->
+  <section>
+    <h2>❌ 无效词（高点击无转化）</h2>
+    <p><strong>说明</strong>：点击 ≥1，但 7 天订单 = 0，应加入否定关键词</p>
+    
+    <!-- 统计信息 -->
+    <div class="stats-grid">
+      <div class="stat-item">总条目: <strong>1000</strong></div>
+      <div class="stat-item">无效词数量: <strong>82</strong></div>
+      <div class="stat-item">无效占比: <strong>8.20%</strong></div>
+    </div>
+
+    <!-- 表格数据 -->
+    <p><strong>⚠️ 提示：未能提取 无效词 表格数据</strong></p><pre>无效词 区块内容未解析成功，请检查输入格式</pre>
+  </section>
+
+  <!-- 词根统计 -->
+  <section>
+    <h2>🔍 词根统计（Root Frequency & Performance）</h2>
+    <p><strong>说明</strong>：按词根拆分后的点击与销量统计，用于优化关键词组合</p>
+    <p><strong>⚠️ 提示：未能提取 词根统计 表格数据</strong></p><pre>词根统计 区块内容未解析成功，请检查输入格式</pre>
+  </section>
+
+  <footer style="text-align: center; margin-top: 50px; color: #888; font-size: 0.9em;">
+    &copy; 2025 广告数据分析系统 | 数据来源：Amazon 广告报表
+  </footer>
+
+</div>
+
+</body>
+</html>
