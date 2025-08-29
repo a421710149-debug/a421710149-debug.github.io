@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8" />
+    <title>关键词分析报告</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f9f9f9;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            background-color: #fff;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #1e90ff;
+            color: white;
+            opacity: 0.9;
+        }
+
+        .invalid {
+            background-color: #ffcccc !important;
+        }
+
+        .low-performance {
+            background-color: #ffffcc !important;
+        }
+
+        .high-performance {
+            background-color: #ccffcc !important;
+        }
+
+        .no-data {
+            color: #888;
+            font-style: italic;
+        }
+
+        .jump-link {
+            display: block;
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #1e90ff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .jump-link:hover {
+            background-color: #0d6efd;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- 无效词表格 -->
+    <h2>无效词</h2>
+    <p><strong>总分析关键词数：</strong>4 | <strong>对应率：</strong>0.00%</p>
+    <table>
+        <thead>
+            <tr>
+                <th>日期</th>
+                <th>具体投放词</th>
+                <th>词组类型</th>
+                <th>词组指标</th>
+                <th>花费</th>
+                <th>总广告投资回报率 (ROAS)</th>
+                <th>广告活动</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td colspan="7" class="no-data">无数据可展示</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- 高效词表格 -->
+    <h2>高效词</h2>
+    <p><strong>总分析关键词数：</strong>4 | <strong>对应率：</strong>0.00%</p>
+    <table>
+        <thead>
+            <tr>
+                <th>日期</th>
+                <th>具体投放词</th>
+                <th>词组类型</th>
+                <th>词组指标</th>
+                <th>花费</th>
+                <th>总广告投资回报率 (ROAS)</th>
+                <th>广告活动</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td colspan="7" class="no-data">无数据可展示</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- 低效词表格 -->
+    <h2>低效词</h2>
+    <p><strong>总分析关键词数：</strong>4 | <strong>对应率：</strong>0.00%</p>
+    <table>
+        <thead>
+            <tr>
+                <th>开始日期</th>
+                <th>结束日期</th>
+                <th>具体投放词</th>
+                <th>词组类型</th>
+                <th>词组指标</th>
+                <th>花费</th>
+                <th>总广告投资回报率 (ROAS)</th>
+                <th>广告活动</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td colspan="8" class="no-data">无数据可展示</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- 词根表 -->
+    <h2>词根统计</h2>
+    <p><strong>总分析关键词数：</strong>0 | <strong>对应率：</strong>0.00%</p>
+    <table>
+        <thead>
+            <tr>
+                <th>客户搜索词</th>
+                <th>点击量</th>
+                <th>7天总销售量</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td colspan="3" class="no-data">无数据可展示</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="#" class="jump-link" onclick="alert('跳转功能已准备就绪！'); return false;">跳转到词根统计页面</a>
+
+</div>
+
+</body>
+</html>
