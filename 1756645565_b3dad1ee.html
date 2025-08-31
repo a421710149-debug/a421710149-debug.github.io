@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>变量聚合报告</title>
+<style>
+  :root {
+    --bg: #f8f9fa;
+    --fg: #333;
+    --muted: #6c757d;
+    --border: #dee2e6;
+    --surface: #ffffff;
+    --card: #ffffff;
+    --link: #0d6efd;
+    --accent: #28a745;
+    --highlight: #fff3cd;
+    --highlight-border: #ffc107;
+    --shadow: 0 2px 12px rgba(0,0,0,0.1);
+    --radius: 8px;
+    --sidebar-width: 280px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #121212;
+      --fg: #e9ecef;
+      --muted: #adb5bd;
+      --border: #495057;
+      --surface: #1e1e1e;
+      --card: #2d2d2d;
+      --link: #6ea8fe;
+      --accent: #20c997;
+      --highlight: #332701;
+      --highlight-border: #ffc107;
+      --shadow: 0 2px 12px rgba(0,0,0,0.3);
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { 
+    height: 100%; 
+    margin: 0; 
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; 
+    color: var(--fg); 
+    background: var(--bg); 
+    line-height: 1.6; 
+  }
+
+  .layout {
+    display: flex;
+    min-height: 100vh;
+  }
+  .sidebar {
+    width: var(--sidebar-width);
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    padding: 24px 20px;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    flex-shrink: 0;
+  }
+  .sidebar .brand {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--accent);
+    margin-bottom: 28px;
+    text-align: center;
+    padding-bottom: 16px;
+    border-bottom: 2px solid var(--border);
+  }
+  .search {
+    width: 100%;
+    padding: 12px 16px;
+    margin-bottom: 24px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--card);
+    color: var(--fg);
+    font-size: 0.95rem;
+    transition: all 0.2s;
+  }
+  .search:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.1);
+  }
+  .toc ul {
+    list-style-type: none;
+    padding-left: 0;
+  }
+  .toc ul ul {
+    padding-left: 20px;
+  }
+  .toc li {
+    margin: 8px 0;
+  }
+  .toc a {
+    display: block;
+    padding: 8px 12px;
+    border-radius: var(--radius);
+    color: var(--fg);
+    text-decoration: none;
+    transition: all 0.2s ease;
+    font-size: 0.95rem;
+  }
+  .toc a:hover {
+    background-color: var(--highlight);
+    color: var(--fg);
+    transform: translateX(4px);
+  }
+  .toc a.active {
+    background-color: var(--highlight-border);
+    color: #212529;
+    font-weight: 500;
+  }
+  .main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  .content {
+    flex: 1;
+    padding: 32px 40px;
+    background: var(--surface);
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+  }
+  h1, h2, h3 {
+    color: var(--accent);
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
+  }
+  .hd {
+    padding: 16px 20px;
+    cursor: pointer;
+    position: relative;
+    border-radius: var(--radius);
+    transition: background-color 0.2s;
+    margin: 0 -20px;
+  }
+  .hd:hover {
+    background-color: var(--highlight);
+  }
+  .hd a {
+    visibility: hidden;
+    position: absolute;
+    right: 20px;
+    font-size: 1.1em;
+    color: var(--muted);
+    text-decoration: none;
+  }
+  .hd:hover a {
+    visibility: visible;
+  }
+  .sec {
+    margin-bottom: 36px;
+    padding: 24px;
+    border-radius: var(--radius);
+    background: var(--card);
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+  }
+  .tbl {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+  .tbl th, .tbl td {
+    padding: 14px;
+    text-align: left;
+    border: 1px solid var(--border);
+  }
+  .tbl th {
+    background-color: var(--card);
+    font-weight: 600;
+    color: var(--accent);
+  }
+  .pre {
+    padding: 18px 20px;
+    background: #f8f9fa;
+    border-radius: var(--radius);
+    font-size: 0.95rem;
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    margin: 16px 0;
+  }
+  @media (prefers-color-scheme: dark) {
+    .pre {
+      background: #2d2d2d;
+    }
+  }
+  .topbar {
+    background: var(--surface);
+    padding: 16px 40px;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(10px);
+  }
+  .topbar .btn {
+    background: var(--accent);
+    border-radius: var(--radius);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 500;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  .topbar .btn:hover {
+    background: #218838;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  }
+  .backtop {
+    display: none;
+    position: fixed;
+    right: 32px;
+    bottom: 32px;
+    background-color: var(--accent);
+    color: white;
+    border: none;
+    padding: 16px;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    font-weight: bold;
+    font-size: 1.2rem;
+    transition: all 0.2s;
+    z-index: 1000;
+  }
+  .backtop.show {
+    display: block;
+  }
+  .backtop:hover {
+    background-color: #218838;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+  }
+  @media (max-width: 768px) {
+    .layout {
+      flex-direction: column;
+    }
+    .sidebar {
+      width: 100%;
+      height: auto;
+      position: relative;
+      border-right: none;
+      border-bottom: 1px solid var(--border);
+    }
+    .content {
+      padding: 20px;
+    }
+    .topbar {
+      padding: 16px 20px;
+    }
+  }
+</style>
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="brand">变量聚合报告</div>
+      <input class="search" id="tocSearch" type="search" placeholder="搜索章节..." />
+      <nav id="toc" class="toc">
+        <ul>
+    <li><a href='#无效词'>无效词</a></li>
+    <li><a href='#高效词'>高效词</a></li>
+    <li><a href='#低效词'>低效词</a></li>
+    <li><a href='#词根表'>词根表</a></li>
+</ul>
+
+      </nav>
+    </aside>
+    <div class="main-content">
+      <div class="topbar">
+        <button class="btn" onclick="navigateToId('top')">返回顶部</button>
+      </div>
+      <main class="content">
+        <div id="top"></div>
+        <section class='sec'><h3 id='无效词' class='hd hd3'>无效词</h3>
+<h1 id='invalidkeywordsfiltered' class='hd hd1'>invalid_keywords_filtered</h1>
+<br/>
+<pre class='pre'>**操作**: 按无效词标准筛选（仅搜索词级别）</pre>
+<br/>
+<h2 id='统计信息' class='hd hd2'>统计信息</h2>
+<table class='tbl'>
+<thead><tr><th>指标</th><th>值</th></tr></thead>
+<tbody>
+<tr><td>**total_items**</td><td>1000</td></tr>
+<tr><td>**invalid_items**</td><td>35</td></tr>
+<tr><td>**invalid_rate**</td><td>3.50%</td></tr>
+</tbody>
+</table>
+<br/>
+<h2 id='数据表格' class='hd hd2'>数据表格</h2>
+<table class='tbl'>
+<thead><tr><th>日期</th><th>广告活动名称</th><th>客户搜索词</th><th>点击量</th><th>7天总订单数(#)</th><th>7天的转化率</th><th>花费</th><th>总广告投资回报率 (ROAS)</th><th>invalid_reason</th></tr></thead>
+<tbody>
+<tr><td>2025-08-24 00:00:00</td><td>ARCHER OAK foldable</td><td>foldable desk</td><td>8</td><td>0</td><td>0%</td><td>2.91</td><td>0.0</td><td>搜索词高点击无转化</td></tr>
+<tr><td>2025-08-18 00:00:00</td><td>ARCHER OAK foldable</td><td>collapsible desk</td><td>5</td><td>0</td><td>0%</td><td>1.7</td><td>0.0</td><td>搜索词高点击无转化</td></tr>
+<tr><td>2025-08-19 00:00:00</td><td>ARCHER OAK foldable</td><td>folding desk</td><td>7</td><td>0</td><td>0%</td><td>2.38</td><td>0.0</td><td>搜索词高点击无转化</td></tr>
+<tr><td>2025-08-21 00:00:00</td><td>ARCHER OAK foldable</td><td>folding desk</td><td>12</td><td>0</td><td>0%</td><td>4.08</td><td>0.0</td><td>搜索词高点击无转化</td></tr>
+<tr><td>2025-08-22 00:00:00</td><td>ARCHER OAK foldable</td><td>folding desk</td><td>11</td><td>0</td><td>0%</td><td>3.74</td><td>0.0</td><td>搜索词高点击无转化</td></tr>
+<tr><td>2025-08-23 00:00:00</td><td>ARCHER OAK foldable</td><td>folding desk</td><td>8</td><td>0</td><td>0%</td><td>2.72</td><td>0.0</td><td>搜索词高点击无转化</td></tr>
+<tr><td>2025-08-18 00:00:00</td><td>ARCHER OAK folding</td><td>folding desk</td><td>31</td><td>0</td><td>0%</td><td>14.87</td><td>0.0</td><td>搜索词高点击无转化</td></tr>
+<tr><td>2025-08-23 00:00:00</td><td>ARCHER OAK folding</td><td>folding desk</td><td>31</td><td>0</td><td>0%</td><td>14.85</td><td>0.0</td><td>搜索词高点击无转化</td></tr>
+<tr><td>2025-08-21 00:00:00</td><td>Here 小胡 其它</td><td>folding desk</td><td>5</td><td>0</td><td>0%</td><td>2.15</td><td>0.0</td><td>搜索词高点击无转化</td></tr>
+<tr><td>2025-08-22 00:00:00</td><td>电脑桌SP-categories</td><td>b0dz6twyrz</td><td>5</td><td>0</td><td>0%</td><td>1.8</td><td>0.0</td><td>搜索词高点击无转化</td></tr>
+<tr><td>2025-08-22 00:00:00</td><td>电脑桌SP-categories</td><td>b06xzv3f8f</td><td>11</td><td>0</td><td>0%</td><td>4.4</td><td>0.0</td><td>搜索词高点击无转化</td></tr>
+<tr><td>2025-08-18 00:00:00</td><td>电脑桌SP-categories</td><td>b08thczcqc</td><td>5</td><td>0</td><td>0%</td><td>2.0</td><td>0.0</td><td>搜索词高点击无转化</td></tr>
+<tr><td>2025-08-22 00:00:00</td><td>电脑桌SP-categories</td><td>b08thczcqc</td><td>8</td><td>0</td><td>0%</td><td>3.2</td><td>0.0</td><td>搜索词高点击无转化</td></tr>
+<tr><td>2025-08-23 00:00:00</td><td>电脑桌SP-categories</td><td>b08thczcqc</td><td>9</td><td>0</td><td>0%</td><td>3.48</td><td>0.0</td><td>搜索词高点击无转化</td></tr>
+<tr><td>2025-08-23 00:00:00</td><td>电脑桌SP-categories</td><td>b08m3w6sml</td><td>6</td><td>0</td><td>0%</td><td>1.26</td><td>0.0</td><td>搜索词高点击无转化</td></tr>
+<tr><td>2025-08-20 00:00:00</td><td>电脑桌SP-categories</td><td>b0bz819b19</td><td>5</td><td>0</td><td>0%</td><td>1.1</td><td>0.0</td><td>搜索词高点击无转化</td></tr>
+<tr><td>2025-08-18 00:00:00</td><td>电脑桌SP-categories</td><td>b0cnlnvrj9</td><td>6</td><td>0</td><td>0%</td><td>1.12</td><td>0.0</td><td>搜索词高点击无转化</td></tr>
+<tr><td>2025-08-18 00:00:00</td><td>ARCHER-MW-S</td><td>small desk for bedroom</td><td>42</td><td>0</td><td>0%</td><td>14.28</td><td>0.0</td><td>搜索词高点击无转化</td></tr>
+<tr><td>2025-08-21 00:00:00</td><td>ARCHER-MW-S</td><td>small desk for bedroom</td><td>37</td><td>0</td><td>0%</td><td>12.58</td><td>0.0</td><td>搜索词高点击无转化</td></tr>
+<tr><td>2025-08-22 00:00:00</td><td>ARCHER-MW-S</td><td>small desk for bedroom</td><td>31</td><td>0</td><td>0%</td><td>10.54</td><td>0.0</td><td>搜索词高点击无转化</td></tr>
+<tr><td>2025-08-23 00:00:00</td><td>ARCHER-MW-S</td><td>small desk for bedroom</td><td>37</td><td>0</td><td>0%</td><td>12.58</td><td>0.0</td><td>搜索词高点击无转化</td></tr>
+<tr><td>2025-08-24 00:00:00</td><td>ARCHER-MW-S</td><td>small desk for bedroom</td><td>18</td><td>0</td><td>0%</td><td>6.12</td><td>0.0</td><td>搜索词高点击无转化</td></tr>
+<tr><td>2025-08-21 00:00:00</td><td>Here 小胡 短语folding desk</td><td>elephance folding desk</td><td>6</td><td>0</td><td>0%</td><td>3.08</td><td>0.0</td><td>搜索词高点击无转化</td></tr>
+<tr><td>2025-08-21 00:00:00</td><td>Here 小胡 短语folding desk</td><td>small folding desk</td><td>5</td><td>0</td><td>0%</td><td>2.6</td><td>0.0</td><td>搜索词高点击无转化</td></tr>
+<tr><td>2025-08-18 00:00:00</td><td>TITAN小黑-新SP</td><td>computer desk</td><td>11</td><td>0</td><td>0%</td><td>3.73</td><td>0.0</td><td>搜索词高点击无转化</td></tr>
+<tr><td>2025-08-19 00:00:00</td><td>TITAN小黑-新SP</td><td>computer desk</td><td>11</td><td>0</td><td>0%</td><td>3.42</td><td>0.0</td><td>搜索词高点击无转化</td></tr>
+<tr><td>2025-08-20 00:00:00</td><td>TITAN小黑-新SP</td><td>computer desk</td><td>9</td><td>0</td><td>0%</td><td>2.77</td><td>0.0</td><td>搜索词高点击无转化</td></tr>
+<tr><td>2025-08-21 00:00:00</td><td>TITAN小黑-新SP</td><td>computer desk</td><td>7</td><td>0</td><td>0%</td><td>2.08</td><td>0.0</td><td>搜索词高点击无转化</td></tr>
+<tr><td>2025-08-19 00:00:00</td><td>TITAN小黑-新SP</td><td>small computer desk</td><td>6</td><td>0</td><td>0%</td><td>1.82</td><td>0.0</td><td>搜索词高点击无转化</td></tr>
+<tr><td>2025-08-20 00:00:00</td><td>TITAN小黑-新SP</td><td>small computer desk</td><td>5</td><td>0</td><td>0%</td><td>1.47</td><td>0.0</td><td>搜索词高点击无转化</td></tr>
+<tr><td>2025-08-23 00:00:00</td><td>harper 小胡-small desk-phrase</td><td>collapsible desk</td><td>6</td><td>0</td><td>0%</td><td>3.0</td><td>0.0</td><td>搜索词高点击无转化</td></tr>
+<tr><td>2025-08-21 00:00:00</td><td>harper 小胡-small desk-phrase</td><td>small computer desk for small spaces</td><td>11</td><td>0</td><td>0%</td><td>5.04</td><td>0.0</td><td>搜索词高点击无转化</td></tr>
+<tr><td>2025-08-24 00:00:00</td><td>harper 小胡-small desk-phrase</td><td>small computer desk for small spaces</td><td>8</td><td>0</td><td>0%</td><td>4.0</td><td>0.0</td><td>搜索词高点击无转化</td></tr>
+<tr><td>2025-08-18 00:00:00</td><td>harper 小胡-small desk-phrase</td><td>small desk</td><td>6</td><td>0</td><td>0%</td><td>3.0</td><td>0.0</td><td>搜索词高点击无转化</td></tr>
+<tr><td>2025-08-22 00:00:00</td><td>harper 小胡-small desk-phrase</td><td>small desk for bedroom</td><td>5</td><td>0</td><td>0%</td><td>2.5</td><td>0.0</td><td>搜索词高点击无转化</td></tr>
+</tbody>
+</table>
+<br/>
+<h3 id='源数据' class='hd hd3'>源数据</h3>
+<pre class='pre'>- **输入时间**: 2025-08-31 13:06:04</pre>
+<pre class='pre'>- **过滤列**: 广告活动名称, 客户搜索词, 点击量, 7天总订单数(#), 7天的转化率, 日期, 花费, 总广告投资回报率 (ROAS)</pre>
+<br/>
+<h3 id='高效词' class='hd hd3'>高效词</h3>
+<h1 id='highperformancekeywords' class='hd hd1'>high_performance_keywords</h1>
+<br/>
+<pre class='pre'>**操作**: 按高效词标准筛选</pre>
+<br/>
+<h2 id='统计信息' class='hd hd2'>统计信息</h2>
+<table class='tbl'>
+<thead><tr><th>指标</th><th>值</th></tr></thead>
+<tbody>
+<tr><td>**total_items**</td><td>1000</td></tr>
+<tr><td>**high_performance_items**</td><td>7</td></tr>
+<tr><td>**high_performance_rate**</td><td>0.70%</td></tr>
+</tbody>
+</table>
+<br/>
+<h2 id='数据表格' class='hd hd2'>数据表格</h2>
+<table class='tbl'>
+<thead><tr><th>日期</th><th>广告活动名称</th><th>客户搜索词</th><th>点击量</th><th>7天总订单数(#)</th><th>7天的转化率</th><th>花费</th><th>总广告投资回报率 (ROAS)</th><th>performance_grade</th></tr></thead>
+<tbody>
+<tr><td>2025-08-20 00:00:00</td><td>Harper 小胡folding-精准</td><td>folding desk</td><td>20</td><td>3</td><td>15%</td><td>15.44</td><td>11.101036269430052</td><td>高效</td></tr>
+<tr><td>2025-08-22 00:00:00</td><td>Harper 小胡folding-精准</td><td>folding desk</td><td>18</td><td>5</td><td>27.78%</td><td>14.4</td><td>19.302083333333332</td><td>高效</td></tr>
+<tr><td>2025-08-23 00:00:00</td><td>Harper 小胡folding-精准</td><td>folding desk</td><td>19</td><td>3</td><td>15.79%</td><td>14.57</td><td>11.214824982841455</td><td>高效</td></tr>
+<tr><td>2025-08-24 00:00:00</td><td>Harper 小胡folding-精准</td><td>folding desk</td><td>21</td><td>3</td><td>14.29%</td><td>16.03</td><td>11.788521522145976</td><td>高效</td></tr>
+<tr><td>2025-08-24 00:00:00</td><td>ARCHER OAK foldable</td><td>folding desk</td><td>13</td><td>2</td><td>15.38%</td><td>4.45</td><td>26.287640449438204</td><td>高效</td></tr>
+<tr><td>2025-08-21 00:00:00</td><td>电脑桌SP-categories</td><td>b0clrlgy4n</td><td>9</td><td>2</td><td>22.22%</td><td>1.98</td><td>50.207070707070706</td><td>高效</td></tr>
+<tr><td>2025-08-22 00:00:00</td><td>Here 小胡 短语folding desk</td><td>folding desk</td><td>28</td><td>5</td><td>17.86%</td><td>14.49</td><td>20.838509316770185</td><td>高效</td></tr>
+</tbody>
+</table>
+<br/>
+<h3 id='源数据' class='hd hd3'>源数据</h3>
+<pre class='pre'>- **输入时间**: 2025-08-31 13:06:05</pre>
+<pre class='pre'>- **过滤列**: 广告活动名称, 客户搜索词, 点击量, 7天总订单数(#), 7天的转化率, 日期, 花费, 总广告投资回报率 (ROAS)</pre>
+<br/>
+<h3 id='低效词' class='hd hd3'>低效词</h3>
+<h1 id='lowperformancekeywords' class='hd hd1'>low_performance_keywords</h1>
+<br/>
+<pre class='pre'>**操作**: 低效词筛选</pre>
+<br/>
+<h2 id='统计信息' class='hd hd2'>统计信息</h2>
+<table class='tbl'>
+<thead><tr><th>指标</th><th>值</th></tr></thead>
+<tbody>
+<tr><td>**total_items**</td><td>1000</td></tr>
+<tr><td>**low_performance_items**</td><td>21</td></tr>
+<tr><td>**low_performance_rate**</td><td>2.10%</td></tr>
+</tbody>
+</table>
+<br/>
+<h2 id='数据表格' class='hd hd2'>数据表格</h2>
+<table class='tbl'>
+<thead><tr><th>日期</th><th>广告活动名称</th><th>客户搜索词</th><th>点击量</th><th>7天总订单数(#)</th><th>7天的转化率</th><th>花费</th><th>总广告投资回报率 (ROAS)</th><th>performance_grade</th><th>calculated_conversion_rate</th></tr></thead>
+<tbody>
+<tr><td>2025-08-24 00:00:00</td><td>Here 小胡 其它</td><td>desk with storage</td><td>0</td><td>1</td><td>0%</td><td>0.0</td><td>nan</td><td>低效</td><td>0.00%</td></tr>
+<tr><td>2025-08-24 00:00:00</td><td>电脑桌SP-categories</td><td>b0c8nvj76q</td><td>0</td><td>1</td><td>0%</td><td>0.0</td><td>nan</td><td>低效</td><td>0.00%</td></tr>
+<tr><td>2025-08-24 00:00:00</td><td>Here 小胡 短语folding desk</td><td>white folding desk</td><td>0</td><td>1</td><td>0%</td><td>0.0</td><td>nan</td><td>低效</td><td>0.00%</td></tr>
+<tr><td>2025-08-20 00:00:00</td><td>ARCHER OAK foldable</td><td>foldable desk</td><td>31</td><td>1</td><td>3.23%</td><td>11.12</td><td>6.563848920863309</td><td>低效</td><td>3.23%</td></tr>
+<tr><td>2025-08-21 00:00:00</td><td>ARCHER OAK folding</td><td>folding desk</td><td>31</td><td>1</td><td>3.23%</td><td>14.76</td><td>4.9451219512195115</td><td>低效</td><td>3.23%</td></tr>
+<tr><td>2025-08-18 00:00:00</td><td>ARCHER OAK foldable</td><td>foldable desk</td><td>28</td><td>1</td><td>3.57%</td><td>9.96</td><td>7.027108433734939</td><td>低效</td><td>3.57%</td></tr>
+<tr><td>2025-08-19 00:00:00</td><td>ARCHER OAK foldable</td><td>foldable desk</td><td>39</td><td>2</td><td>5.13%</td><td>14.07</td><td>9.664534470504618</td><td>低效</td><td>5.13%</td></tr>
+<tr><td>2025-08-20 00:00:00</td><td>Here 小胡 短语folding desk</td><td>folding desk</td><td>19</td><td>1</td><td>5.26%</td><td>9.42</td><td>7.748407643312102</td><td>低效</td><td>5.26%</td></tr>
+<tr><td>2025-08-18 00:00:00</td><td>Harper 小胡folding-精准</td><td>folding desk</td><td>18</td><td>1</td><td>5.56%</td><td>14.12</td><td>3.5000000000000004</td><td>低效</td><td>5.56%</td></tr>
+<tr><td>2025-08-23 00:00:00</td><td>Here 小胡 短语folding desk</td><td>folding desk</td><td>18</td><td>1</td><td>5.56%</td><td>9.36</td><td>5.340811965811966</td><td>低效</td><td>5.56%</td></tr>
+<tr><td>2025-08-19 00:00:00</td><td>ARCHER-MW-S</td><td>small desk for bedroom</td><td>35</td><td>2</td><td>5.71%</td><td>11.9</td><td>10.92268907563025</td><td>低效</td><td>5.71%</td></tr>
+<tr><td>2025-08-22 00:00:00</td><td>ARCHER OAK foldable</td><td>foldable desk</td><td>34</td><td>2</td><td>5.88%</td><td>12.03</td><td>9.98171238570241</td><td>低效</td><td>5.88%</td></tr>
+<tr><td>2025-08-19 00:00:00</td><td>ARCHER OAK folding</td><td>folding desk</td><td>32</td><td>2</td><td>6.25%</td><td>15.26</td><td>8.058977719528178</td><td>低效</td><td>6.25%</td></tr>
+<tr><td>2025-08-20 00:00:00</td><td>ARCHER OAK folding</td><td>folding desk</td><td>31</td><td>2</td><td>6.45%</td><td>14.87</td><td>7.866845998655011</td><td>低效</td><td>6.45%</td></tr>
+<tr><td>2025-08-18 00:00:00</td><td>ARCHER OAK foldable</td><td>folding desk</td><td>15</td><td>1</td><td>6.67%</td><td>5.1</td><td>8.380392156862746</td><td>低效</td><td>6.67%</td></tr>
+<tr><td>2025-08-22 00:00:00</td><td>ARCHER OAK folding</td><td>folding desk</td><td>30</td><td>2</td><td>6.67%</td><td>14.35</td><td>9.894076655052265</td><td>低效</td><td>6.67%</td></tr>
+<tr><td>2025-08-21 00:00:00</td><td>ARCHER OAK foldable</td><td>foldable desk</td><td>41</td><td>3</td><td>7.32%</td><td>13.92</td><td>12.282327586206897</td><td>低效</td><td>7.32%</td></tr>
+<tr><td>2025-08-20 00:00:00</td><td>ARCHER-MW-S</td><td>small desk for bedroom</td><td>27</td><td>2</td><td>7.41%</td><td>9.18</td><td>14.159041394335512</td><td>低效</td><td>7.41%</td></tr>
+<tr><td>2025-08-23 00:00:00</td><td>ARCHER OAK foldable</td><td>foldable desk</td><td>38</td><td>3</td><td>7.89%</td><td>13.61</td><td>13.517266715650258</td><td>低效</td><td>7.89%</td></tr>
+<tr><td>2025-08-18 00:00:00</td><td>Here 小胡 短语folding desk</td><td>folding desk</td><td>24</td><td>2</td><td>8.33%</td><td>12.48</td><td>9.533653846153847</td><td>低效</td><td>8.33%</td></tr>
+<tr><td>2025-08-24 00:00:00</td><td>Here 小胡 短语folding desk</td><td>folding desk</td><td>12</td><td>1</td><td>8.33%</td><td>6.24</td><td>8.011217948717949</td><td>低效</td><td>8.33%</td></tr>
+</tbody>
+</table>
+<br/>
+<h3 id='源数据' class='hd hd3'>源数据</h3>
+<pre class='pre'>- **输入时间**: 2025-08-31 13:06:05</pre>
+<pre class='pre'>- **过滤列**: 广告活动名称, 客户搜索词, 点击量, 7天总订单数(#), 7天的转化率, 日期, 花费, 总广告投资回报率 (ROAS)</pre></section>
+<section class='sec'><h3 id='词根表' class='hd hd3'>词根表</h3>
+<h1 id='rootstatistics' class='hd hd1'>root_statistics</h1>
+<br/>
+<pre class='pre'>**操作**: 词根拆分统计（按销售量降序）</pre>
+<br/>
+<h2 id='数据表格' class='hd hd2'>数据表格</h2>
+<table class='tbl'>
+<thead><tr><th>词根</th><th>点击量</th><th>7天总销售量(#)</th></tr></thead>
+<tbody>
+<tr><td>desk</td><td>1827</td><td>119</td></tr>
+<tr><td>folding</td><td>826</td><td>71</td></tr>
+<tr><td>small</td><td>635</td><td>32</td></tr>
+<tr><td>foldable</td><td>408</td><td>30</td></tr>
+<tr><td>for</td><td>448</td><td>13</td></tr>
+<tr><td>spaces</td><td>100</td><td>8</td></tr>
+<tr><td>b0cy5kgv8g</td><td>28</td><td>8</td></tr>
+<tr><td>computer</td><td>192</td><td>6</td></tr>
+<tr><td>bedroom</td><td>325</td><td>5</td></tr>
+<tr><td>with</td><td>50</td><td>4</td></tr>
+<tr><td>desks</td><td>60</td><td>4</td></tr>
+<tr><td>b08thczcqc</td><td>45</td><td>4</td></tr>
+<tr><td>narrow</td><td>3</td><td>4</td></tr>
+<tr><td>collapsible</td><td>37</td><td>3</td></tr>
+<tr><td>office</td><td>26</td><td>3</td></tr>
+<tr><td>b0clrlgy4n</td><td>22</td><td>3</td></tr>
+<tr><td>tier</td><td>5</td><td>2</td></tr>
+<tr><td>portable</td><td>22</td><td>2</td></tr>
+<tr><td>coavas</td><td>13</td><td>2</td></tr>
+<tr><td>simple</td><td>2</td><td>2</td></tr>
+<tr><td>storage</td><td>26</td><td>2</td></tr>
+<tr><td>white</td><td>15</td><td>2</td></tr>
+<tr><td>b0dz6twyrz</td><td>23</td><td>2</td></tr>
+<tr><td>b09tw8rkth</td><td>17</td><td>2</td></tr>
+<tr><td>b0cqsf8y5n</td><td>9</td><td>2</td></tr>
+<tr><td>frylr</td><td>3</td><td>2</td></tr>
+<tr><td>inch</td><td>24</td><td>1</td></tr>
+<tr><td>table</td><td>59</td><td>1</td></tr>
+<tr><td>monitor</td><td>6</td><td>1</td></tr>
+<tr><td>shelves</td><td>8</td><td>1</td></tr>
+<tr><td>two</td><td>4</td><td>1</td></tr>
+<tr><td>stand</td><td>4</td><td>1</td></tr>
+<tr><td>compact</td><td>7</td><td>1</td></tr>
+<tr><td>work</td><td>13</td><td>1</td></tr>
+<tr><td>easy</td><td>4</td><td>1</td></tr>
+<tr><td>homework</td><td>2</td><td>1</td></tr>
+<tr><td>bed</td><td>5</td><td>1</td></tr>
+<tr><td>over</td><td>3</td><td>1</td></tr>
+<tr><td>sorogra</td><td>6</td><td>1</td></tr>
+<tr><td>elephance</td><td>19</td><td>1</td></tr>
+<tr><td>315</td><td>3</td><td>1</td></tr>
+<tr><td>b083s5hr3r</td><td>1</td><td>1</td></tr>
+<tr><td>b08vj9n49t</td><td>1</td><td>1</td></tr>
+<tr><td>b08cb925ct</td><td>3</td><td>1</td></tr>
+<tr><td>b08dvdv1v2</td><td>7</td><td>1</td></tr>
+<tr><td>b0bx8tq4tz</td><td>8</td><td>1</td></tr>
+<tr><td>b0bz819b19</td><td>12</td><td>1</td></tr>
+<tr><td>b0c53c7q75</td><td>1</td><td>1</td></tr>
+<tr><td>b0c8nvj76q</td><td>1</td><td>1</td></tr>
+<tr><td>b0cgzvjvsn</td><td>5</td><td>1</td></tr>
+<tr><td>b0clrgkvt4</td><td>2</td><td>1</td></tr>
+<tr><td>b0cs3k9cwc</td><td>1</td><td>1</td></tr>
+<tr><td>b0csrdn4rc</td><td>1</td><td>1</td></tr>
+<tr><td>b0cthhqdnj</td><td>1</td><td>1</td></tr>
+<tr><td>b0d4pb95r8</td><td>16</td><td>1</td></tr>
+<tr><td>b0d9q542sf</td><td>2</td><td>1</td></tr>
+<tr><td>b0dbsrhzhh</td><td>2</td><td>1</td></tr>
+<tr><td>b0df2g3q2g</td><td>12</td><td>1</td></tr>
+<tr><td>b0dk4z5k71</td><td>6</td><td>1</td></tr>
+<tr><td>b0dl8p12rj</td><td>1</td><td>1</td></tr>
+<tr><td>b0dqksvc1b</td><td>12</td><td>1</td></tr>
+<tr><td>b0dwmztjbv</td><td>2</td><td>1</td></tr>
+<tr><td>gamer</td><td>2</td><td>1</td></tr>
+<tr><td>4nm</td><td>3</td><td>1</td></tr>
+<tr><td>folded</td><td>2</td><td>0</td></tr>
+<tr><td>affordable</td><td>1</td><td>0</td></tr>
+<tr><td>amazon</td><td>3</td><td>0</td></tr>
+<tr><td>beige</td><td>1</td><td>0</td></tr>
+<tr><td>dorm</td><td>7</td><td>0</td></tr>
+<tr><td>inches</td><td>1</td><td>0</td></tr>
+<tr><td>tall</td><td>3</td><td>0</td></tr>
+<tr><td>black</td><td>10</td><td>0</td></tr>
+<tr><td>modern</td><td>2</td><td>0</td></tr>
+<tr><td>kids</td><td>9</td><td>0</td></tr>
+<tr><td>laptop</td><td>8</td><td>0</td></tr>
+<tr><td>room</td><td>6</td><td>0</td></tr>
+<tr><td>study</td><td>15</td><td>0</td></tr>
+<tr><td>gorogra</td><td>1</td><td>0</td></tr>
+<tr><td>lightweight</td><td>2</td><td>0</td></tr>
+<tr><td>built</td><td>1</td><td>0</td></tr>
+<tr><td>light</td><td>1</td><td>0</td></tr>
+<tr><td>slant</td><td>1</td><td>0</td></tr>
+<tr><td>lenart</td><td>1</td><td>0</td></tr>
+<tr><td>preassembled</td><td>1</td><td>0</td></tr>
+<tr><td>short</td><td>1</td><td>0</td></tr>
+<tr><td>monitors</td><td>2</td><td>0</td></tr>
+<tr><td>tiny</td><td>1</td><td>0</td></tr>
+<tr><td>wooden</td><td>2</td><td>0</td></tr>
+<tr><td>apartment</td><td>1</td><td>0</td></tr>
+<tr><td>best</td><td>1</td><td>0</td></tr>
+<tr><td>durable</td><td>1</td><td>0</td></tr>
+<tr><td>fold</td><td>4</td><td>0</td></tr>
+<tr><td>gaming</td><td>5</td><td>0</td></tr>
+<tr><td>home</td><td>4</td><td>0</td></tr>
+<tr><td>lab</td><td>1</td><td>0</td></tr>
+<tr><td>off</td><td>1</td><td>0</td></tr>
+<tr><td>studying</td><td>1</td><td>0</td></tr>
+<tr><td>assembly</td><td>8</td><td>0</td></tr>
+<tr><td>tablet</td><td>1</td><td>0</td></tr>
+<tr><td>arm</td><td>1</td><td>0</td></tr>
+<tr><td>working</td><td>1</td><td>0</td></tr>
+<tr><td>foldaway</td><td>2</td><td>0</td></tr>
+<tr><td>card</td><td>1</td><td>0</td></tr>
+<tr><td>side</td><td>4</td><td>0</td></tr>
+<tr><td>nice</td><td>1</td><td>0</td></tr>
+<tr><td>girls</td><td>1</td><td>0</td></tr>
+<tr><td>30in</td><td>1</td><td>0</td></tr>
+<tr><td>child</td><td>1</td><td>0</td></tr>
+<tr><td>21in</td><td>1</td><td>0</td></tr>
+<tr><td>high</td><td>2</td><td>0</td></tr>
+<tr><td>sturdy</td><td>1</td><td>0</td></tr>
+<tr><td>wide</td><td>4</td><td>0</td></tr>
+<tr><td>deep</td><td>4</td><td>0</td></tr>
+<tr><td>x24</td><td>1</td><td>0</td></tr>
+<tr><td>3222</td><td>1</td><td>0</td></tr>
+<tr><td>adult</td><td>2</td><td>0</td></tr>
+<tr><td>alawooder</td><td>15</td><td>0</td></tr>
+<tr><td>cheap</td><td>1</td><td>0</td></tr>
+<tr><td>college</td><td>6</td><td>0</td></tr>
+<tr><td>depth</td><td>1</td><td>0</td></tr>
+<tr><td>students</td><td>1</td><td>0</td></tr>
+<tr><td>812</td><td>3</td><td>0</td></tr>
+<tr><td>student</td><td>1</td><td>0</td></tr>
+<tr><td>school</td><td>1</td><td>0</td></tr>
+<tr><td>teens</td><td>1</td><td>0</td></tr>
+<tr><td>under</td><td>2</td><td>0</td></tr>
+<tr><td>bunk</td><td>1</td><td>0</td></tr>
+<tr><td>folds</td><td>1</td><td>0</td></tr>
+<tr><td>ages</td><td>1</td><td>0</td></tr>
+<tr><td>that</td><td>1</td><td>0</td></tr>
+<tr><td>pouch</td><td>1</td><td>0</td></tr>
+<tr><td>bedrooms</td><td>2</td><td>0</td></tr>
+<tr><td>drafting</td><td>1</td><td>0</td></tr>
+<tr><td>kid</td><td>1</td><td>0</td></tr>
+<tr><td>assemble</td><td>1</td><td>0</td></tr>
+<tr><td>flip</td><td>1</td><td>0</td></tr>
+<tr><td>classroom</td><td>2</td><td>0</td></tr>
+<tr><td>printer</td><td>7</td><td>0</td></tr>
+<tr><td>and</td><td>6</td><td>0</td></tr>
+<tr><td>space</td><td>5</td><td>0</td></tr>
+<tr><td>foldingdesk</td><td>1</td><td>0</td></tr>
+<tr><td>homeschool</td><td>2</td><td>0</td></tr>
+<tr><td>large</td><td>2</td><td>0</td></tr>
+<tr><td>chesk</td><td>1</td><td>0</td></tr>
+<tr><td>mini</td><td>1</td><td>0</td></tr>
+<tr><td>mrironstone</td><td>1</td><td>0</td></tr>
+<tr><td>murphy</td><td>1</td><td>0</td></tr>
+<tr><td>one</td><td>1</td><td>0</td></tr>
+<tr><td>person</td><td>1</td><td>0</td></tr>
+<tr><td>twin</td><td>1</td><td>0</td></tr>
+<tr><td>pamray</td><td>2</td><td>0</td></tr>
+<tr><td>living</td><td>1</td><td>0</td></tr>
+<tr><td>purple</td><td>1</td><td>0</td></tr>
+<tr><td>color</td><td>1</td><td>0</td></tr>
+<tr><td>roda</td><td>1</td><td>0</td></tr>
+<tr><td>writing</td><td>3</td><td>0</td></tr>
+<tr><td>slim</td><td>1</td><td>0</td></tr>
+<tr><td>pocket</td><td>2</td><td>0</td></tr>
+<tr><td>hooks</td><td>1</td><td>0</td></tr>
+<tr><td>teacher</td><td>1</td><td>0</td></tr>
+<tr><td>overnight</td><td>1</td><td>0</td></tr>
+<tr><td>teen</td><td>2</td><td>0</td></tr>
+<tr><td>wood</td><td>3</td><td>0</td></tr>
+<tr><td>look</td><td>1</td><td>0</td></tr>
+<tr><td>b0cl9lmvzd</td><td>5</td><td>0</td></tr>
+<tr><td>b0cl9lsk45</td><td>1</td><td>0</td></tr>
+<tr><td>b0cy5clj1q</td><td>2</td><td>0</td></tr>
+<tr><td>b0cy5j1zq7</td><td>2</td><td>0</td></tr>
+<tr><td>b0cy5jl6wg</td><td>8</td><td>0</td></tr>
+<tr><td>b0dfcxl2gw</td><td>1</td><td>0</td></tr>
+<tr><td>b0dz6v5w2g</td><td>1</td><td>0</td></tr>
+<tr><td>b06xzv3f8f</td><td>24</td><td>0</td></tr>
+<tr><td>b087c3vkd5</td><td>1</td><td>0</td></tr>
+<tr><td>b08978ytdd</td><td>1</td><td>0</td></tr>
+<tr><td>b08qfm5pxf</td><td>1</td><td>0</td></tr>
+<tr><td>b0cssyy27j</td><td>1</td><td>0</td></tr>
+<tr><td>b0cst1tgx1</td><td>2</td><td>0</td></tr>
+<tr><td>b01grl45ii</td><td>1</td><td>0</td></tr>
+<tr><td>b075f9ktqw</td><td>3</td><td>0</td></tr>
+<tr><td>b07fdjt6dc</td><td>1</td><td>0</td></tr>
+<tr><td>b07pcmwy9w</td><td>1</td><td>0</td></tr>
+<tr><td>b07q33bdkc</td><td>3</td><td>0</td></tr>
+<tr><td>b07s7nq7wv</td><td>2</td><td>0</td></tr>
+<tr><td>b0823b125h</td><td>1</td><td>0</td></tr>
+<tr><td>b082w2hz89</td><td>1</td><td>0</td></tr>
+<tr><td>b087c75p7g</td><td>1</td><td>0</td></tr>
+<tr><td>b088t4jnqh</td><td>1</td><td>0</td></tr>
+<tr><td>b08bj2qrm9</td><td>2</td><td>0</td></tr>
+<tr><td>b08m3w6sml</td><td>17</td><td>0</td></tr>
+<tr><td>b08m998k7j</td><td>1</td><td>0</td></tr>
+<tr><td>b08nsxp9ky</td><td>1</td><td>0</td></tr>
+<tr><td>b08pdtsy7d</td><td>1</td><td>0</td></tr>
+<tr><td>b08s2pg1tk</td><td>1</td><td>0</td></tr>
+<tr><td>b08tlyg6r3</td><td>1</td><td>0</td></tr>
+<tr><td>b08xq4fqtp</td><td>2</td><td>0</td></tr>
+<tr><td>b092hvg2pl</td><td>2</td><td>0</td></tr>
+<tr><td>b093c517l6</td><td>1</td><td>0</td></tr>
+<tr><td>b098njlpkw</td><td>2</td><td>0</td></tr>
+<tr><td>b09bqw6dtd</td><td>1</td><td>0</td></tr>
+<tr><td>b09d6m8bhl</td><td>1</td><td>0</td></tr>
+<tr><td>b09dpj8dx7</td><td>4</td><td>0</td></tr>
+<tr><td>b09kcppycr</td><td>1</td><td>0</td></tr>
+<tr><td>b09kcq223r</td><td>1</td><td>0</td></tr>
+<tr><td>b09tw72gq9</td><td>4</td><td>0</td></tr>
+<tr><td>b09v24ls2x</td><td>1</td><td>0</td></tr>
+<tr><td>b09v24n1jb</td><td>3</td><td>0</td></tr>
+<tr><td>b09vyz97gy</td><td>6</td><td>0</td></tr>
+<tr><td>b0bd3nwzfm</td><td>2</td><td>0</td></tr>
+<tr><td>b0bd5b6xv9</td><td>2</td><td>0</td></tr>
+<tr><td>b0bj2l53x7</td><td>1</td><td>0</td></tr>
+<tr><td>b0bnkrt8tq</td><td>3</td><td>0</td></tr>
+<tr><td>b0bnl17k27</td><td>1</td><td>0</td></tr>
+<tr><td>b0bnnbjpmh</td><td>1</td><td>0</td></tr>
+<tr><td>b0brd42vth</td><td>1</td><td>0</td></tr>
+<tr><td>b0bvqkpnyy</td><td>1</td><td>0</td></tr>
+<tr><td>b0bvr3rklz</td><td>1</td><td>0</td></tr>
+<tr><td>b0bz12pt1z</td><td>1</td><td>0</td></tr>
+<tr><td>b0bz7gxm4m</td><td>6</td><td>0</td></tr>
+<tr><td>b0bz8cy6z8</td><td>3</td><td>0</td></tr>
+<tr><td>b0c1nt6rk5</td><td>1</td><td>0</td></tr>
+<tr><td>b0c2yyyryf</td><td>1</td><td>0</td></tr>
+<tr><td>b0c4gzdp5g</td><td>1</td><td>0</td></tr>
+<tr><td>b0c4h1c4z1</td><td>1</td><td>0</td></tr>
+<tr><td>b0c96g95mp</td><td>4</td><td>0</td></tr>
+<tr><td>b0cb32mkvp</td><td>1</td><td>0</td></tr>
+<tr><td>b0cb5g1bhx</td><td>4</td><td>0</td></tr>
+<tr><td>b0cb5h4jt1</td><td>8</td><td>0</td></tr>
+<tr><td>b0cbcbpnhw</td><td>2</td><td>0</td></tr>
+<tr><td>b0cbccfmty</td><td>1</td><td>0</td></tr>
+<tr><td>b0ccvffj6z</td><td>4</td><td>0</td></tr>
+<tr><td>b0ccvhlc6h</td><td>1</td><td>0</td></tr>
+<tr><td>b0cd7h6bc3</td><td>3</td><td>0</td></tr>
+<tr><td>b0cdc6tynq</td><td>1</td><td>0</td></tr>
+<tr><td>b0cdvymt1x</td><td>1</td><td>0</td></tr>
+<tr><td>b0cdvyw4hk</td><td>1</td><td>0</td></tr>
+<tr><td>b0chj8qhbb</td><td>1</td><td>0</td></tr>
+<tr><td>b0chrnxvmr</td><td>1</td><td>0</td></tr>
+<tr><td>b0cj8rb157</td><td>1</td><td>0</td></tr>
+<tr><td>b0cj8ssp2q</td><td>3</td><td>0</td></tr>
+<tr><td>b0cjlhjh61</td><td>3</td><td>0</td></tr>
+<tr><td>b0cjlk5tkl</td><td>2</td><td>0</td></tr>
+<tr><td>b0cljglxqq</td><td>1</td><td>0</td></tr>
+<tr><td>b0cm5j8zfb</td><td>1</td><td>0</td></tr>
+<tr><td>b0cnlnvrj9</td><td>14</td><td>0</td></tr>
+<tr><td>b0cq4q4s3b</td><td>10</td><td>0</td></tr>
+<tr><td>b0cq591rxs</td><td>1</td><td>0</td></tr>
+<tr><td>b0cqlw32sc</td><td>2</td><td>0</td></tr>
+<tr><td>b0cr1cm8jk</td><td>1</td><td>0</td></tr>
+<tr><td>b0crhdpjg6</td><td>2</td><td>0</td></tr>
+<tr><td>b0cryh3kmd</td><td>2</td><td>0</td></tr>
+<tr><td>b0cs6lpgdt</td><td>5</td><td>0</td></tr>
+<tr><td>b0cssd8cb9</td><td>1</td><td>0</td></tr>
+<tr><td>b0ct37dcz8</td><td>1</td><td>0</td></tr>
+<tr><td>b0ct5qlb13</td><td>4</td><td>0</td></tr>
+<tr><td>b0ctjkfnqd</td><td>1</td><td>0</td></tr>
+<tr><td>b0ctqb8v78</td><td>1</td><td>0</td></tr>
+<tr><td>b0cwkrb51k</td><td>1</td><td>0</td></tr>
+<tr><td>b0cwlgpx9d</td><td>1</td><td>0</td></tr>
+<tr><td>b0cwpk4cyl</td><td>2</td><td>0</td></tr>
+<tr><td>b0cxpm1hh1</td><td>4</td><td>0</td></tr>
+<tr><td>b0cyfwmwvw</td><td>1</td><td>0</td></tr>
+<tr><td>b0cygfzm89</td><td>3</td><td>0</td></tr>
+<tr><td>b0cyswysq4</td><td>2</td><td>0</td></tr>
+<tr><td>b0d1yhvzx3</td><td>1</td><td>0</td></tr>
+<tr><td>b0d25hpsk9</td><td>6</td><td>0</td></tr>
+<tr><td>b0d25t9w19</td><td>1</td><td>0</td></tr>
+<tr><td>b0d28ngzhy</td><td>1</td><td>0</td></tr>
+<tr><td>b0d28q85lt</td><td>3</td><td>0</td></tr>
+<tr><td>b0d29b51dd</td><td>3</td><td>0</td></tr>
+<tr><td>b0d2hv6613</td><td>3</td><td>0</td></tr>
+<tr><td>b0d2hw7rbf</td><td>1</td><td>0</td></tr>
+<tr><td>b0d3h35lmy</td><td>1</td><td>0</td></tr>
+<tr><td>b0d4pcd2px</td><td>4</td><td>0</td></tr>
+<tr><td>b0d4qtyzpd</td><td>2</td><td>0</td></tr>
+<tr><td>b0d5bmfk9s</td><td>4</td><td>0</td></tr>
+<tr><td>b0d66jt5qp</td><td>1</td><td>0</td></tr>
+<tr><td>b0d7lwyq3d</td><td>1</td><td>0</td></tr>
+<tr><td>b0dcjft75y</td><td>3</td><td>0</td></tr>
+<tr><td>b0dcvkb9sd</td><td>1</td><td>0</td></tr>
+<tr><td>b0dcvmbw77</td><td>2</td><td>0</td></tr>
+<tr><td>b0ddq39y4x</td><td>1</td><td>0</td></tr>
+<tr><td>b0ddtdw3yb</td><td>1</td><td>0</td></tr>
+<tr><td>b0dfc4cvhk</td><td>1</td><td>0</td></tr>
+<tr><td>b0dfpnhlxw</td><td>3</td><td>0</td></tr>
+<tr><td>b0dfpv866h</td><td>1</td><td>0</td></tr>
+<tr><td>b0dg5qxb8s</td><td>1</td><td>0</td></tr>
+<tr><td>b0dgt72g1z</td><td>2</td><td>0</td></tr>
+<tr><td>b0dhs6ntxs</td><td>1</td><td>0</td></tr>
+<tr><td>b0dj8m8ggk</td><td>3</td><td>0</td></tr>
+<tr><td>b0djlr3qk2</td><td>3</td><td>0</td></tr>
+<tr><td>b0djvdzmwp</td><td>1</td><td>0</td></tr>
+<tr><td>b0dk4r5cyq</td><td>2</td><td>0</td></tr>
+<tr><td>b0dlbfswvm</td><td>1</td><td>0</td></tr>
+<tr><td>b0dm15z2cv</td><td>2</td><td>0</td></tr>
+<tr><td>b0dm1rtwb3</td><td>3</td><td>0</td></tr>
+<tr><td>b0dpbbw3sw</td><td>1</td><td>0</td></tr>
+<tr><td>b0dpg3cwwz</td><td>1</td><td>0</td></tr>
+<tr><td>b0dqcjv9xf</td><td>1</td><td>0</td></tr>
+<tr><td>b0dqkt5826</td><td>3</td><td>0</td></tr>
+<tr><td>b0ds85nntl</td><td>1</td><td>0</td></tr>
+<tr><td>b0ds8d1273</td><td>1</td><td>0</td></tr>
+<tr><td>b0dsj9y6n9</td><td>1</td><td>0</td></tr>
+<tr><td>b0dspgmjkn</td><td>1</td><td>0</td></tr>
+<tr><td>b0dspysthw</td><td>1</td><td>0</td></tr>
+<tr><td>b0dt3zzl4j</td><td>3</td><td>0</td></tr>
+<tr><td>b0dt8s72wz</td><td>1</td><td>0</td></tr>
+<tr><td>b0dt9969rw</td><td>3</td><td>0</td></tr>
+<tr><td>b0dx6pllfm</td><td>2</td><td>0</td></tr>
+<tr><td>b0dxky7mk4</td><td>1</td><td>0</td></tr>
+<tr><td>b0dxt7q252</td><td>1</td><td>0</td></tr>
+<tr><td>b0dxtg47tb</td><td>1</td><td>0</td></tr>
+<tr><td>b0dytzjy91</td><td>1</td><td>0</td></tr>
+<tr><td>b0dzxbldq6</td><td>1</td><td>0</td></tr>
+<tr><td>b0f1fjxm7x</td><td>6</td><td>0</td></tr>
+<tr><td>b0f1yftt79</td><td>1</td><td>0</td></tr>
+<tr><td>b0f2f24qyq</td><td>4</td><td>0</td></tr>
+<tr><td>b0f2f6mq4h</td><td>7</td><td>0</td></tr>
+<tr><td>b0f43tl3gt</td><td>10</td><td>0</td></tr>
+<tr><td>b0f43v1j81</td><td>1</td><td>0</td></tr>
+<tr><td>b0f43v9hrs</td><td>1</td><td>0</td></tr>
+<tr><td>b0f43wcbmz</td><td>1</td><td>0</td></tr>
+<tr><td>b0f43wdgqv</td><td>1</td><td>0</td></tr>
+<tr><td>b0f5hjf1jn</td><td>4</td><td>0</td></tr>
+<tr><td>b0f6mn1fsw</td><td>1</td><td>0</td></tr>
+<tr><td>b0f6sy1vk3</td><td>1</td><td>0</td></tr>
+<tr><td>b0f7x8tvrv</td><td>2</td><td>0</td></tr>
+<tr><td>b0f7x93l3s</td><td>3</td><td>0</td></tr>
+<tr><td>b0f83gg2yc</td><td>1</td><td>0</td></tr>
+<tr><td>b0f8hllhvb</td><td>1</td><td>0</td></tr>
+<tr><td>b0ff4ly17m</td><td>3</td><td>0</td></tr>
+<tr><td>b0fhqm1d5l</td><td>2</td><td>0</td></tr>
+<tr><td>corner</td><td>5</td><td>0</td></tr>
+<tr><td>shelf</td><td>6</td><td>0</td></tr>
+<tr><td>rolling</td><td>2</td><td>0</td></tr>
+<tr><td>besiost</td><td>4</td><td>0</td></tr>
+<tr><td>coleshome</td><td>1</td><td>0</td></tr>
+<tr><td>higdbfe</td><td>1</td><td>0</td></tr>
+<tr><td>homcom</td><td>1</td><td>0</td></tr>
+<tr><td>huuger</td><td>17</td><td>0</td></tr>
+<tr><td>jakyitvi</td><td>3</td><td>0</td></tr>
+<tr><td>lufeiya</td><td>1</td><td>0</td></tr>
+<tr><td>mutun</td><td>1</td><td>0</td></tr>
+<tr><td>paylesshere</td><td>7</td><td>0</td></tr>
+<tr><td>sinpaid</td><td>1</td><td>0</td></tr>
+<tr><td>yatiney</td><td>1</td><td>0</td></tr>
+<tr><td>rustic</td><td>3</td><td>0</td></tr>
+<tr><td>free</td><td>1</td><td>0</td></tr>
+<tr><td>shipping</td><td>1</td><td>0</td></tr>
+<tr><td>brown</td><td>1</td><td>0</td></tr>
+<tr><td>tables</td><td>2</td><td>0</td></tr>
+<tr><td>pockets</td><td>1</td><td>0</td></tr>
+<tr><td>foldingdeskwithstorage</td><td>1</td><td>0</td></tr>
+<tr><td>greenforest</td><td>3</td><td>0</td></tr>
+<tr><td>heavy</td><td>1</td><td>0</td></tr>
+<tr><td>duty</td><td>1</td><td>0</td></tr>
+<tr><td>soroga</td><td>1</td><td>0</td></tr>
+<tr><td>wohomo</td><td>3</td><td>0</td></tr>
+<tr><td>dual</td><td>1</td><td>0</td></tr>
+<tr><td>stands</td><td>1</td><td>0</td></tr>
+<tr><td>desktop</td><td>1</td><td>0</td></tr>
+<tr><td>already</td><td>1</td><td>0</td></tr>
+<tr><td>assembled</td><td>1</td><td>0</td></tr>
+<tr><td>coeztt</td><td>1</td><td>0</td></tr>
+<tr><td>convenient</td><td>1</td><td>0</td></tr>
+<tr><td>cubicubi</td><td>4</td><td>0</td></tr>
+<tr><td>dumos</td><td>3</td><td>0</td></tr>
+<tr><td>computadoras</td><td>1</td><td>0</td></tr>
+<tr><td>escritorios</td><td>1</td><td>0</td></tr>
+<tr><td>para</td><td>1</td><td>0</td></tr>
+<tr><td>shahoo</td><td>1</td><td>0</td></tr>
+<tr><td>art</td><td>1</td><td>0</td></tr>
+</tbody>
+</table>
+<br/>
+<h3 id='元数据' class='hd hd3'>元数据</h3>
+<pre class='pre'>- **输入时间**: 2025-08-31 13:06:04</pre></section>
+      </main>
+    </div>
+  </div>
+  <button id="backtop" class="backtop" onclick="navigateToId('top')">↑</button>
+
+<script>
+  // 页面内导航函数
+  function navigateToId(id) {
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  }
+
+  // 滚动时显示/隐藏返回顶部按钮
+  window.addEventListener('scroll', function() {
+    const backtop = document.getElementById('backtop');
+    if (window.scrollY > 300) {
+      backtop.classList.add('show');
+    } else {
+      backtop.classList.remove('show');
+    }
+  });
+
+  // TOC搜索功能
+  document.getElementById('tocSearch').addEventListener('input', function(e) {
+    const searchTerm = e.target.value.toLowerCase();
+    const links = document.querySelectorAll('#toc a');
+    
+    links.forEach(link => {
+      const text = link.textContent.toLowerCase();
+      if (text.includes(searchTerm)) {
+        link.style.display = 'block';
+      } else {
+        link.style.display = 'none';
+      }
+    });
+  });
+
+  // 活动链接高亮
+  window.addEventListener('scroll', function() {
+    const headers = document.querySelectorAll('h1, h2, h3');
+    const links = document.querySelectorAll('#toc a');
+    
+    let current = '';
+    headers.forEach(header => {
+      const rect = header.getBoundingClientRect();
+      if (rect.top <= 100 && rect.bottom >= 100) {
+        current = header.id;
+      }
+    });
+    
+    links.forEach(link => {
+      link.classList.remove('active');
+      if (link.getAttribute('href').substring(1) === current) {
+        link.classList.add('active');
+      }
+    });
+  });
+</script>
+</body>
+</html>
