@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>无效词分析报告</title>
+<style>
+  :root {
+    --bg: #f4f7fc;
+    --fg: #222;
+    --muted: #747474;
+    --border: #dcdfe6;
+    --surface: #ffffff;
+    --link: #1a73e8;
+    --accent: #4caf50;
+    --highlight: #ffe082;
+    --highlight-border: #ff9800;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #303030;
+      --fg: #eaeaea;
+      --muted: #929292;
+      --border: #595959;
+      --surface: #2c2c2c;
+      --link: #81c784;
+      --accent: #81c784;
+      --highlight: #ffeb3b;
+      --highlight-border: #ff9800;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    margin: 0;
+    font-family: system-ui, sans-serif;
+    color: var(--fg);
+    background: var(--bg);
+    line-height: 1.6;
+  }
+
+  .layout { display: grid; grid-template-columns: 260px 1fr; min-height: 100vh; }
+  .sidebar {
+    position: sticky; top: 0; height: 100vh;
+    padding: 20px 15px; border-right: 2px solid var(--border);
+    background: var(--surface);
+    overflow: auto;
+  }
+  .sidebar .brand {
+    font-size: 1.4em;
+    font-weight: bold;
+    color: var(--accent);
+    margin-bottom: 20px;
+  }
+  .search {
+    width: 100%;
+    padding: 10px 15px;
+    margin-bottom: 20px;
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    background: var(--surface);
+    color: var(--fg);
+    font-size: 1em;
+  }
+  .search:focus {
+    border-color: var(--accent);
+    outline: none;
+  }
+  .toc ul {
+    list-style: none;
+    padding-left: 0;
+  }
+  .toc ul ul {
+    padding-left: 16px;
+  }
+  .toc a {
+    display: block;
+    padding: 8px 16px;
+    margin-bottom: 5px;
+    border-radius: 6px;
+    color: var(--fg);
+    text-decoration: none;
+  }
+  .toc a:hover {
+    background-color: var(--highlight);
+    color: var(--fg);
+  }
+  .toc a.active {
+    background-color: var(--highlight-border);
+    font-weight: bold;
+  }
+  .content {
+    padding: 24px;
+    background: var(--surface);
+  }
+  h1, h2, h3 {
+    color: var(--accent);
+  }
+  .hd {
+    padding: 10px 0;
+    cursor: pointer;
+    position: relative;
+  }
+  .hd:hover {
+    background-color: var(--highlight);
+  }
+  .hd a {
+    visibility: hidden;
+  }
+  .hd:hover a {
+    visibility: visible;
+    position: absolute;
+    right: -25px;
+    font-size: 1.2em;
+  }
+  .sec {
+    margin-bottom: 24px;
+  }
+  .tbl {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-family: system-ui, sans-serif;
+    font-size: 0.95em;
+  }
+  .tbl th, .tbl td {
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    font-family: inherit;
+    font-size: 14px; /* 统一字体大小 */
+    font-weight: bold; /* 所有表格单元格字体加粗 */
+  }
+  .tbl th {
+    background-color: var(--surface);
+    text-align: center;
+  }
+  /* 统一所有单元格的对齐方式 */
+  .tbl td {
+    text-align: center;
+    vertical-align: middle;
+  }
+  /* 特定列的特殊对齐方式 */
+  .tbl td:nth-child(1), /* Start Date */
+  .tbl td:nth-child(2) { /* End Date */
+    text-align: center;
+    font-family: monospace;
+  }
+  .tbl td:nth-child(3), /* Campaign Name */
+  .tbl td:nth-child(4) { /* Customer Search Term */
+    text-align: left;
+  }
+  .tbl td:nth-child(5), /* Clicks */
+  .tbl td:nth-child(6), /* 7 Day Total Orders (#) */
+  .tbl td:nth-child(7), /* 7 Day Conversion Rate */
+  .tbl td:nth-child(8), /* Spend */
+  .tbl td:nth-child(9) { /* Total Return on Advertising Spend (ROAS) */
+    text-align: right;
+    font-family: monospace;
+  }
+  .pre {
+    padding: 15px;
+    background: #f5f5f5;
+    border-radius: 8px;
+    font-size: 1em;
+    overflow-x: auto;
+    font-family: system-ui, monospace;
+  }
+  .topbar {
+    position: sticky; top: 0;
+    background: var(--surface);
+    padding: 12px 0;
+    z-index: 10;
+    border-bottom: 2px solid var(--border);
+  }
+  .topbar .btn {
+    background: var(--accent);
+    border-radius: 6px;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    font-size: 1em;
+    font-family: system-ui, sans-serif;
+  }
+  .backtop {
+    display: none;
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    background-color: var(--accent);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-family: system-ui, sans-serif;
+  }
+  .backtop.show {
+    display: block;
+  }
+</style>
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="brand">无效词分析报告</div>
+      <input class="search" id="tocSearch" type="search" placeholder="搜索章节..." />
+      <nav id="toc" class="toc">
+        <ul>
+    <li><a href='#低效词'>无效词</a></li>
+    <li><a href='#高效词'>高效词</a></li>
+    <li><a href='#无效词'>低效词</a></li>
+    <li><a href='#词根表'>词根表</a></li>
+</ul>
+
+      </nav>
+    </aside>
+    <main class="content">
+      <div class="topbar">
+        <button class="btn" onclick="navigateToId('top')">返回顶部</button>
+      </div>
+      <div id="top"></div>
+      <section class='sec'><h3 id='无效词' class='hd hd3'>低效词</h3>
+<h1 id='lowperformancekeywords' class='hd hd1'>low_performance_keywords</h1>
+<br/>
+<pre class='pre'>**操作**: 低效词筛选</pre>
+<br/>
+<h2 id='统计信息' class='hd hd2'>统计信息</h2>
+<table class='tbl'>
+<thead><tr><th>指标</th><th>值</th></tr></thead>
+<tbody>
+<tr><td>**total_items**</td><td>1000</td></tr>
+<tr><td>**low_performance_items**</td><td>3</td></tr>
+<tr><td>**low_performance_rate**</td><td>0.30%</td></tr>
+</tbody>
+</table>
+<br/>
+<h2 id='数据表格' class='hd hd2'>数据表格</h2>
+<table class='tbl'>
+<thead><tr><th>Campaign Name</th><th>Customer Search Term</th><th>Clicks</th><th>7 Day Total Orders (#)</th><th>7 Day Conversion Rate</th><th>Date</th><th>Spend</th><th>Total Return on Advertising Spend (ROAS)</th><th>performance_grade</th><th>calculated_conversion_rate</th></tr></thead>
+<tbody>
+<tr><td>SPK-Q14 BK-CO SI-Ph3-SS</td><td>black queen skirt for bedding</td><td>0</td><td>1</td><td>0%</td><td>2025-07-09 00:00:00</td><td>0.00</td><td>nan</td><td>低效</td><td>0.00%</td></tr>
+<tr><td>SPP-green bed skirt-品类-PDSLL-低周转已暂停</td><td>b08p4g2rlv</td><td>0</td><td>1</td><td>0%</td><td>2025-07-09 00:00:00</td><td>0.00</td><td>nan</td><td>低效</td><td>0.00%</td></tr>
+<tr><td>SPK-T32白-尺寸2-精准 -SS</td><td>twin xl bed skirt dorm</td><td>13</td><td>1</td><td>7.69%</td><td>2025-07-03 00:00:00</td><td>3.70</td><td>4.86</td><td>低效</td><td>7.69%</td></tr>
+</tbody>
+</table>
+<br/>
+<h3 id='源数据' class='hd hd3'>源数据</h3>
+<pre class='pre'>- **输入时间**: 2025-09-02 01:13:01</pre>
+<pre class='pre'>- **过滤列**: Campaign Name, Customer Search Term, Clicks, 7 Day Total Orders (#), 7 Day Conversion Rate, Date, Spend, Total Return on Advertising Spend (ROAS)</pre>
+<br/>
+<h3 id='高效词' class='hd hd3'>高效词</h3>
+<h1 id='highperformancekeywords' class='hd hd1'>high_performance_keywords</h1>
+<br/>
+<pre class='pre'>**操作**: 按高效词标准筛选</pre>
+<br/>
+<h2 id='统计信息' class='hd hd2'>统计信息</h2>
+<table class='tbl'>
+<thead><tr><th>指标</th><th>值</th></tr></thead>
+<tbody>
+<tr><td>**total_items**</td><td>1000</td></tr>
+<tr><td>**high_performance_items**</td><td>10</td></tr>
+<tr><td>**high_performance_rate**</td><td>1.00%</td></tr>
+</tbody>
+</table>
+<br/>
+<h2 id='数据表格' class='hd hd2'>数据表格</h2>
+<table class='tbl'>
+<thead><tr><th>Campaign Name</th><th>Customer Search Term</th><th>Clicks</th><th>7 Day Total Orders (#)</th><th>7 Day Conversion Rate</th><th>Date</th><th>Spend</th><th>Total Return on Advertising Spend (ROAS)</th><th>performance_grade</th></tr></thead>
+<tbody>
+<tr><td>SPK-Q14WH-DR SI-EX-GH</td><td>queen bed skirt 14 inch drop</td><td>9</td><td>2</td><td>22.22%</td><td>2025-07-03 00:00:00</td><td>6.55</td><td>3.71</td><td>高效</td></tr>
+<tr><td>SPK-T32白-场景-精准 -GH</td><td>dorm bed skirt</td><td>44</td><td>12</td><td>27.27%</td><td>2025-07-08 00:00:00</td><td>14.42</td><td>13.21</td><td>高效</td></tr>
+<tr><td>SPK-Q14WH-SI-PH</td><td>queen bedskirt</td><td>8</td><td>2</td><td>25%</td><td>2025-07-12 00:00:00</td><td>12.80</td><td>2.19</td><td>高效</td></tr>
+<tr><td>SPK-F14WH-SI-EX-LL</td><td>dust ruffle full size bed</td><td>8</td><td>2</td><td>25%</td><td>2025-07-08 00:00:00</td><td>2.25</td><td>9.77</td><td>高效</td></tr>
+<tr><td>SPK-T32白-尺寸2-精准 -SS</td><td>twin xl bed skirt dorm</td><td>12</td><td>2</td><td>16.67%</td><td>2025-07-04 00:00:00</td><td>3.67</td><td>8.82</td><td>高效</td></tr>
+<tr><td>SPK-T32白-尺寸2-精准 -SS</td><td>twin xl bed skirt dorm</td><td>9</td><td>2</td><td>22.22%</td><td>2025-07-05 00:00:00</td><td>3.17</td><td>17.37</td><td>高效</td></tr>
+<tr><td>SPK-T32白-尺寸2-精准 -SS</td><td>twin xl bed skirt dorm</td><td>14</td><td>3</td><td>21.43%</td><td>2025-07-06 00:00:00</td><td>3.38</td><td>13.01</td><td>高效</td></tr>
+<tr><td>SPK-T32白-尺寸2-精准 -SS</td><td>twin xl bed skirt dorm</td><td>20</td><td>3</td><td>15%</td><td>2025-07-08 00:00:00</td><td>6.76</td><td>6.62</td><td>高效</td></tr>
+<tr><td>SPK-T32白-尺寸2-精准 -SS</td><td>twin xl bedskirt</td><td>12</td><td>5</td><td>41.67%</td><td>2025-07-08 00:00:00</td><td>4.03</td><td>21.51</td><td>高效</td></tr>
+<tr><td>SPK-Q14PK-CO SI-EX-LL-SLL</td><td>pink bed skirt queen</td><td>14</td><td>2</td><td>14.29%</td><td>2025-07-09 00:00:00</td><td>7.08</td><td>3.81</td><td>高效</td></tr>
+</tbody>
+</table>
+<br/>
+<h3 id='源数据' class='hd hd3'>源数据</h3>
+<pre class='pre'>- **输入时间**: 2025-09-02 01:13:01</pre>
+<pre class='pre'>- **过滤列**: Campaign Name, Customer Search Term, Clicks, 7 Day Total Orders (#), 7 Day Conversion Rate, Date, Spend, Total Return on Advertising Spend (ROAS)</pre>
+<br/>
+<h3 id='低效词' class='hd hd3'>无效词</h3>
+<h1 id='invalidkeywordsfiltered' class='hd hd1'>invalid_keywords_filtered</h1>
+<br/>
+<pre class='pre'>**操作**: 按无效词标准筛选（仅搜索词级别）</pre>
+<br/>
+<h2 id='统计信息' class='hd hd2'>统计信息</h2>
+<table class='tbl'>
+<thead><tr><th>指标</th><th>值</th></tr></thead>
+<tbody>
+<tr><td>**total_items**</td><td>1000</td></tr>
+<tr><td>**invalid_items**</td><td>11</td></tr>
+<tr><td>**invalid_rate**</td><td>1.10%</td></tr>
+</tbody>
+</table>
+<br/>
+<h2 id='数据表格' class='hd hd2'>数据表格</h2>
+<table class='tbl'>
+<thead><tr><th>Campaign Name</th><th>Customer Search Term</th><th>Clicks</th><th>7 Day Total Orders (#)</th><th>7 Day Conversion Rate</th><th>Date</th><th>Spend</th><th>Total Return on Advertising Spend (ROAS)</th><th>invalid_reason</th></tr></thead>
+<tbody>
+<tr><td>SPK-K-king bed skirt-EX-SS</td><td>king bed skirt</td><td>5</td><td>0</td><td>0%</td><td>2025-07-08 00:00:00</td><td>2.20</td><td>0.00</td><td>搜索词高点击无转化</td></tr>
+<tr><td>SPK-Q14WH-DR SI-EX-GH</td><td>queen bed skirt 14 inch drop</td><td>5</td><td>0</td><td>0%</td><td>2025-07-04 00:00:00</td><td>4.52</td><td>0.00</td><td>搜索词高点击无转化</td></tr>
+<tr><td>1Q14WH-SPK-wrap around bed skirt-精准</td><td>wrap around bed skirt</td><td>5</td><td>0</td><td>0%</td><td>2025-07-10 00:00:00</td><td>2.15</td><td>0.00</td><td>搜索词高点击无转化</td></tr>
+<tr><td>SPK-T32白-场景-精准 -GH</td><td>dorm bed skirt</td><td>7</td><td>0</td><td>0%</td><td>2025-07-03 00:00:00</td><td>1.95</td><td>0.00</td><td>搜索词高点击无转化</td></tr>
+<tr><td>SPK-T32白-场景-精准 -GH</td><td>dorm bed skirt</td><td>5</td><td>0</td><td>0%</td><td>2025-07-06 00:00:00</td><td>1.50</td><td>0.00</td><td>搜索词高点击无转化</td></tr>
+<tr><td>SPK-F14WH-SI-EX-LL</td><td>dust ruffle full size bed</td><td>5</td><td>0</td><td>0%</td><td>2025-07-07 00:00:00</td><td>1.25</td><td>0.00</td><td>搜索词高点击无转化</td></tr>
+<tr><td>SPK-T32白-尺寸2-精准 -SS</td><td>twin xl bed skirt dorm</td><td>9</td><td>0</td><td>0%</td><td>2025-07-02 00:00:00</td><td>2.52</td><td>0.00</td><td>搜索词高点击无转化</td></tr>
+<tr><td>SPK-T32白-尺寸2-精准 -SS</td><td>twin xl bed skirt dorm</td><td>8</td><td>0</td><td>0%</td><td>2025-07-07 00:00:00</td><td>3.29</td><td>0.00</td><td>搜索词高点击无转化</td></tr>
+<tr><td>SPK-T32白-尺寸2-精准 -SS</td><td>bed skirt twin xl bed</td><td>10</td><td>0</td><td>0%</td><td>2025-07-09 00:00:00</td><td>1.51</td><td>0.00</td><td>搜索词高点击无转化</td></tr>
+<tr><td>SPK-Q14PK-CO SI-EX-LL-SLL</td><td>pink bed skirt queen</td><td>6</td><td>0</td><td>0%</td><td>2025-07-05 00:00:00</td><td>2.56</td><td>0.00</td><td>搜索词高点击无转化</td></tr>
+<tr><td>SPK-Q14PK-CO SI-EX-LL-SLL</td><td>pink bed skirt queen</td><td>9</td><td>0</td><td>0%</td><td>2025-07-07 00:00:00</td><td>5.97</td><td>0.00</td><td>搜索词高点击无转化</td></tr>
+</tbody>
+</table>
+<br/>
+<h3 id='源数据' class='hd hd3'>源数据</h3>
+<pre class='pre'>- **输入时间**: 2025-09-02 01:13:01</pre>
+<pre class='pre'>- **过滤列**: Campaign Name, Customer Search Term, Clicks, 7 Day Total Orders (#), 7 Day Conversion Rate, Date, Spend, Total Return on Advertising Spend (ROAS)</pre></section>
+<section class'sec'><h3 id='词根表' class='hd hd3'>词根表</h3>
+<h1 id='rootstatistics' class='hd hd1'>root_statistics</h1>
+<br/>
+<pre class='pre'>**操作**: Root split statistics (sorted by 7-Day Total Units descending)</pre>
+<br/>
+<h2 id='数据表格' class='hd hd2'>数据表格</h2>
+<table class='tbl'>
+<thead><tr><th>Root</th><th>Clicks</th><th>7 Day Total Units (#)</th></tr></thead>
+<tbody>
+<tr><td>bed</td><td>1216</td><td>196</td></tr>
+<tr><td>skirt</td><td>1057</td><td>178</td></tr>
+<tr><td>queen</td><td>668</td><td>131</td></tr>
+<tr><td>drop</td><td>266</td><td>59</td></tr>
+<tr><td>inch</td><td>274</td><td>59</td></tr>
+<tr><td>size</td><td>329</td><td>57</td></tr>
+<tr><td>white</td><td>201</td><td>55</td></tr>
+<tr><td>bedskirt</td><td>243</td><td>50</td></tr>
+<tr><td>twin</td><td>357</td><td>47</td></tr>
+<tr><td>dorm</td><td>250</td><td>38</td></tr>
+<tr><td>king</td><td>183</td><td>29</td></tr>
+<tr><td>gray</td><td>92</td><td>23</td></tr>
+<tr><td>full</td><td>165</td><td>23</td></tr>
+<tr><td>around</td><td>69</td><td>18</td></tr>
+<tr><td>wrap</td><td>70</td><td>18</td></tr>
+<tr><td>pink</td><td>148</td><td>18</td></tr>
+<tr><td>ruffle</td><td>112</td><td>16</td></tr>
+<tr><td>dust</td><td>109</td><td>15</td></tr>
+<tr><td>skirts</td><td>78</td><td>11</td></tr>
+<tr><td>elastic</td><td>17</td><td>9</td></tr>
+<tr><td>cream</td><td>54</td><td>6</td></tr>
+<tr><td>bedskirts</td><td>35</td><td>5</td></tr>
+<tr><td>for</td><td>38</td><td>4</td></tr>
+<tr><td>black</td><td>17</td><td>3</td></tr>
+<tr><td>ivory</td><td>21</td><td>3</td></tr>
+<tr><td>skirting</td><td>8</td><td>2</td></tr>
+<tr><td>dark</td><td>6</td><td>2</td></tr>
+<tr><td>grey</td><td>11</td><td>2</td></tr>
+<tr><td>light</td><td>7</td><td>2</td></tr>
+<tr><td>bedding</td><td>1</td><td>1</td></tr>
+<tr><td>with</td><td>4</td><td>1</td></tr>
+<tr><td>bag</td><td>1</td><td>1</td></tr>
+<tr><td>cotton</td><td>7</td><td>1</td></tr>
+<tr><td>ruffled</td><td>10</td><td>1</td></tr>
+<tr><td>b08p4g2rlv</td><td>0</td><td>1</td></tr>
+<tr><td>bungie</td><td>1</td><td>1</td></tr>
+<tr><td>cheap</td><td>1</td><td>1</td></tr>
+<tr><td>kids</td><td>1</td><td>1</td></tr>
+<tr><td>purple</td><td>2</td><td>1</td></tr>
+<tr><td>pleated</td><td>2</td><td>1</td></tr>
+<tr><td>vocander</td><td>1</td><td>1</td></tr>
+<tr><td>ruffles</td><td>10</td><td>1</td></tr>
+<tr><td>easy</td><td>2</td><td>1</td></tr>
+<tr><td>california</td><td>3</td><td>1</td></tr>
+<tr><td>box</td><td>3</td><td>1</td></tr>
+<tr><td>spring</td><td>3</td><td>1</td></tr>
+<tr><td>neutral</td><td>1</td><td>1</td></tr>
+<tr><td>under</td><td>2</td><td>1</td></tr>
+<tr><td>nstall</td><td>1</td><td>1</td></tr>
+<tr><td>polyester</td><td>1</td><td>1</td></tr>
+<tr><td>lace</td><td>1</td><td>1</td></tr>
+<tr><td>mattress</td><td>1</td><td>1</td></tr>
+<tr><td>headboard</td><td>4</td><td>1</td></tr>
+<tr><td>b08jlp5tgw</td><td>4</td><td>0</td></tr>
+<tr><td>free</td><td>1</td><td>0</td></tr>
+<tr><td>wrinkle</td><td>1</td><td>0</td></tr>
+<tr><td>biscaynebay</td><td>2</td><td>0</td></tr>
+<tr><td>silver</td><td>2</td><td>0</td></tr>
+<tr><td>pinchpleated</td><td>1</td><td>0</td></tr>
+<tr><td>gold</td><td>1</td><td>0</td></tr>
+<tr><td>linen</td><td>2</td><td>0</td></tr>
+<tr><td>sage</td><td>1</td><td>0</td></tr>
+<tr><td>green</td><td>18</td><td>0</td></tr>
+<tr><td>b091knrbym</td><td>1</td><td>0</td></tr>
+<tr><td>b09p33zp2n</td><td>1</td><td>0</td></tr>
+<tr><td>b0d2h5rk6r</td><td>1</td><td>0</td></tr>
+<tr><td>frey</td><td>1</td><td>0</td></tr>
+<tr><td>adjustable</td><td>5</td><td>0</td></tr>
+<tr><td>basics</td><td>2</td><td>0</td></tr>
+<tr><td>amazon</td><td>3</td><td>0</td></tr>
+<tr><td>split</td><td>6</td><td>0</td></tr>
+<tr><td>corners</td><td>6</td><td>0</td></tr>
+<tr><td>long</td><td>3</td><td>0</td></tr>
+<tr><td>cover</td><td>2</td><td>0</td></tr>
+<tr><td>fitted</td><td>1</td><td>0</td></tr>
+<tr><td>oatmeal</td><td>1</td><td>0</td></tr>
+<tr><td>taupe</td><td>1</td><td>0</td></tr>
+<tr><td>frame</td><td>2</td><td>0</td></tr>
+<tr><td>metal</td><td>1</td><td>0</td></tr>
+<tr><td>and</td><td>2</td><td>0</td></tr>
+<tr><td>sets</td><td>1</td><td>0</td></tr>
+<tr><td>b09jwpdwvb</td><td>1</td><td>0</td></tr>
+<tr><td>b08tm64l2r</td><td>3</td><td>0</td></tr>
+<tr><td>colored</td><td>5</td><td>0</td></tr>
+<tr><td>removable</td><td>1</td><td>0</td></tr>
+<tr><td>tan</td><td>2</td><td>0</td></tr>
+<tr><td>eyelet</td><td>3</td><td>0</td></tr>
+<tr><td>dustruffle</td><td>1</td><td>0</td></tr>
+<tr><td>fullsize</td><td>1</td><td>0</td></tr>
+<tr><td>beds</td><td>1</td><td>0</td></tr>
+<tr><td>base</td><td>2</td><td>0</td></tr>
+<tr><td>soft</td><td>1</td><td>0</td></tr>
+<tr><td>queens</td><td>1</td><td>0</td></tr>
+<tr><td>fabric</td><td>1</td><td>0</td></tr>
+<tr><td>skirtgrayqueen</td><td>1</td><td>0</td></tr>
+<tr><td>charcoal</td><td>1</td><td>0</td></tr>
+<tr><td>masculine</td><td>1</td><td>0</td></tr>
+<tr><td>queenking</td><td>1</td><td>0</td></tr>
+<tr><td>striped</td><td>1</td><td>0</td></tr>
+<tr><td>color</td><td>3</td><td>0</td></tr>
+<tr><td>beige</td><td>1</td><td>0</td></tr>
+<tr><td>sleep</td><td>1</td><td>0</td></tr>
+<tr><td>number</td><td>1</td><td>0</td></tr>
+<tr><td>vintage</td><td>1</td><td>0</td></tr>
+<tr><td>lofted</td><td>2</td><td>0</td></tr>
+<tr><td>freshculture</td><td>1</td><td>0</td></tr>
+<tr><td>tulle</td><td>3</td><td>0</td></tr>
+<tr><td>sham</td><td>1</td><td>0</td></tr>
+<tr><td>unlimited</td><td>1</td><td>0</td></tr>
+<tr><td>cgk</td><td>1</td><td>0</td></tr>
+<tr><td>rose</td><td>1</td><td>0</td></tr>
+<tr><td>rimela</td><td>1</td><td>0</td></tr>
+<tr><td>cal</td><td>1</td><td>0</td></tr>
+<tr><td>embroidered</td><td>1</td><td>0</td></tr>
+<tr><td>14in</td><td>1</td><td>0</td></tr>
+<tr><td>best</td><td>1</td><td>0</td></tr>
+<tr><td>back</td><td>1</td><td>0</td></tr>
+<tr><td>stretch</td><td>1</td><td>0</td></tr>
+<tr><td>spots</td><td>1</td><td>0</td></tr>
+<tr><td>the</td><td>1</td><td>0</td></tr>
+<tr><td>legs</td><td>1</td><td>0</td></tr>
+<tr><td>duster</td><td>1</td><td>0</td></tr>
+<tr><td>short</td><td>1</td><td>0</td></tr>
+<tr><td>tsutomi</td><td>1</td><td>0</td></tr>
+<tr><td>18boho</td><td>1</td><td>0</td></tr>
+<tr><td>hand</td><td>1</td><td>0</td></tr>
+<tr><td>crocheted</td><td>1</td><td>0</td></tr>
+<tr><td>trousseau</td><td>1</td><td>0</td></tr>
+<tr><td>percale</td><td>1</td><td>0</td></tr>
+<tr><td>deep</td><td>2</td><td>0</td></tr>
+<tr><td>ski</td><td>1</td><td>0</td></tr>
+<tr><td>preppy</td><td>1</td><td>0</td></tr>
+<tr><td>classic</td><td>1</td><td>0</td></tr>
+<tr><td>16in</td><td>1</td><td>0</td></tr>
+<tr><td>fluffy</td><td>1</td><td>0</td></tr>
+</tbody>
+</table>
+<br/>
+<h3 id='源数据' class='hd hd3'>源数据</h3>
+<pre class='pre'>- **输入时间**: 2025-09-02 01:13:01</pre></section>
+    </main>
+  </div>
+  <button id="backtop" class="backtop" onclick="navigateToId('top')">↑</button>
+
+<script>
+  // 页面内导航函数
+  function navigateToId(id) {
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  }
+
+  // 滚动时显示/隐藏返回顶部按钮
+  window.addEventListener('scroll', function() {
+    const backtop = document.getElementById('backtop');
+    if (window.scrollY > 300) {
+      backtop.classList.add('show');
+    } else {
+      backtop.classList.remove('show');
+    }
+  });
+
+  // TOC搜索功能
+  document.getElementById('tocSearch').addEventListener('input', function(e) {
+    const searchTerm = e.target.value.toLowerCase();
+    const links = document.querySelectorAll('#toc a');
+    
+    links.forEach(link => {
+      const text = link.textContent.toLowerCase();
+      if (text.includes(searchTerm)) {
+        link.style.display = 'block';
+      } else {
+        link.style.display = 'none';
+      }
+    });
+  });
+
+  // 活动链接高亮
+  window.addEventListener('scroll', function() {
+    const headers = document.querySelectorAll('h1, h2, h3');
+    const links = document.querySelectorAll('#toc a');
+    
+    let current = '';
+    headers.forEach(header => {
+      const rect = header.getBoundingClientRect();
+      if (rect.top <= 100 && rect.bottom >= 100) {
+        current = header.id;
+      }
+    });
+    
+    links.forEach(link => {
+      link.classList.remove('active');
+      if (link.getAttribute('href').substring(1) === current) {
+        link.classList.add('active');
+      }
+    });
+  });
+</script>
+</body>
+</html>
