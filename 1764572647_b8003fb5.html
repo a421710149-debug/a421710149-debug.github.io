@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8" />
+    <title>退货分析可视化</title>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .chart-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .chart-wrapper {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+        }
+        .chart {
+            width: 100%;
+            max-width: 600px;
+            height: 400px;
+        }
+    </style>
+</head>
+<body>
+    <div class="chart-container">
+        <div class="chart-wrapper">
+            <div id="reasonChart" class="chart"></div>
+            <div id="productChart" class="chart"></div>
+        </div>
+    </div>
+
+    <script>
+        // 解析用户提供的 JSON 数据
+        const rawData = JSON.parse('{{cleaned_data}}');
+
+        // 准备原因维度的数据（逆序以实现从上到下降序）
+        const reasonNames = rawData.reasons.map(item => item.name).reverse();
+        const reasonValues = rawData.reasons.map(item => item.value).reverse();
+
+        // 准备产品维度的数据（逆序以实现从上到下降序）
+        const productNames = rawData.products.map(item => item.name).reverse();
+        const productValues = rawData.products.map(item => item.value).reverse();
+
+        // 初始化图表实例
+        const reasonChart = echarts.init(document.getElementById('reasonChart'));
+        const productChart = echarts.init(document.getElementById('productChart'));
+
+        // 配置原因维度的图表
+        const reasonOption = {
+            title: {
+                text: '退货原因分析',
+                left: 'center'
+            },
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'shadow'
+                }
+            },
+            xAxis: {
+                type: 'value',
+                name: '退货数量'
+            },
+            yAxis: {
+                type: 'category',
+                data: reasonNames,
+                inverse: true // 确保类目轴逆序显示
+            },
+            series: [{
+                name: '退货数量',
+                type: 'bar',
+                data: reasonValues,
+                label: {
+                    show: true,
+                    position: 'insideEnd',
+                    formatter: '{b}: {c}'
+                },
+                itemStyle: {
+                    color: '#F46036'
+                }
+            }]
+        };
+
+        // 配置产品维度的图表
+        const productOption = {
+            title: {
+                text: '退货产品 TOP 10',
+                left: 'center'
+            },
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'shadow'
+                }
+            },
+            xAxis: {
+                type: 'value',
+                name: '退货数量'
+            },
+            yAxis: {
+                type: 'category',
+                data: productNames,
+                inverse: true // 确保类目轴逆序显示
+            },
+            series: [{
+                name: '退货数量',
+                type: 'bar',
+                data: productValues,
+                label: {
+                    show: true,
+                    position: 'insideEnd',
+                    formatter: '{b}: {c}'
+                },
+                itemStyle: {
+                    color: '#2E86C1'
+                }
+            }]
+        };
+
+        // 设置图表选项并渲染
+        reasonChart.setOption(reasonOption);
+        productChart.setOption(productOption);
+
+        // 自适应窗口大小变化
+        window.addEventListener('resize', () => {
+            reasonChart.resize();
+            productChart.resize();
+        });
+    </script>
+</body>
+</html>
