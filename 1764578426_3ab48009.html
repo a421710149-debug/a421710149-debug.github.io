@@ -1,0 +1,64 @@
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>退货数据分析</title>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <style>
+        #reason-chart, #product-chart {
+            width: 100%;
+            height: 400px;
+        }
+    </style>
+</head>
+<body>
+    <div id="reason-chart"></div>
+    <div id="product-chart"></div>
+    <script>
+        const data = JSON.parse(`[
+            {"SKU": "QTH007A-HP", "ASIN": "B0BJL53NM5", "FNSKU": "X003FR5LYL", "Reason": "PART_NOT_COMPATIBLE", "Customer-Comments": "", "退款根因": "产品不兼容", "根因优化策略": "未知策略", "行动计划": "未知行动计划"},
+            {"SKU": "QTH393A-HP", "ASIN": "B0CYSPS14W", "FNSKU": "X0046D8YLZ", "Reason": "QUALITY_UNACCEPTABLE", "Customer-Comments": "", "退款根因": "产品质量问题", "根因优化策略": "未知策略", "行动计划": "未知行动计划"},
+            {"SKU": "QTH1100A-HP-YSD", "ASIN": "B0D7ZGN6H1", "FNSKU": "X004AQUYAH", "Reason": "PART_NOT_COMPATIBLE", "Customer-Comments": "", "退款根因": "产品不兼容", "根因优化策略": "未知策略", "行动计划": "未知行动计划"},
+            {"SKU": "QTH345A-HP", "ASIN": "B0D2D42M92", "FNSKU": "X0047OKGZF", "Reason": "PART_NOT_COMPATIBLE", "Customer-Comments": "Too heavy duty for what I need.", "退款根因": "产品不兼容", "根因优化策略": "未知策略", "行动计划": "未知行动计划"},
+            {"SKU": "QTH345A-HP", "ASIN": "B0D2D42M92", "FNSKU": "X0047OKGZF", "Reason": "NOT_COMPATIBLE", "Customer-Comments": "", "退款根因": "产品不兼容", "根因优化策略": "未知策略", "行动计划": "未知行动计划"},
+            {"SKU": "QTH007A-HP", "ASIN": "B0BJL53NM5", "FNSKU": "X003FR5LYL", "Reason": "PART_NOT_COMPATIBLE", "Customer-Comments": "Too short", "退款根因": "产品不兼容", "根因优化策略": "未知策略", "行动计划": "未知行动计划"},
+            {"SKU": "QTH1034A-HP", "ASIN": "B0CYSCWMDG", "FNSKU": "X0046D8YN3", "Reason": "NOT_COMPATIBLE", "Customer-Comments": "", "退款根因": "产品不兼容", "根因优化策略": "未知策略", "行动计划": "未知行动计划"},
+            {"SKU": "QTH257A-HP", "ASIN": "B0BN7RT1MN", "FNSKU": "X003JL7CK9", "Reason": "ORDERED_WRONG_ITEM", "Customer-Comments": "", "退款根因": "订单错误", "根因优化策略": "未知策略", "行动计划": "未知行动计划"},
+            {"SKU": "QTH410A-HP", "ASIN": "B0CCVKH7FC", "FNSKU": "X003WPAJKR", "Reason": "PART_NOT_COMPATIBLE", "Customer-Comments": "", "退款根因": "产品不兼容", "根因优化策略": "未知策略", "行动计划": "未知行动计划"},
+            {"SKU": "QTH1127A-HP", "ASIN": "B0CLGW9VS9", "FNSKU": "X0042Z82I7", "Reason": "PART_NOT_COMPATIBLE", "Customer-Comments": "", "退款根因": "产品不兼容", "根因优化策略": "未知策略", "行动计划": "未知行动计划"},
+            {"SKU": "QTH1127A-HP", "ASIN": "B0CLGW9VS9", "FNSKU": "X0042Z82I7", "Reason": "PART_NOT_COMPATIBLE", "Customer-Comments": "", "退款根因": "产品不兼容", "根因优化策略": "未知策略", "行动计划": "未知行动计划"},
+            {"SKU": "QTH604-HP-YSD", "ASIN": "B0DGL3BRTM", "FNSKU": "X004E25ZKV", "Reason": "NOT_COMPATIBLE", "Customer-Comments": "Too strong for my door", "退款根因": "产品不兼容", "根因优化策略": "未知策略", "行动计划": "未知行动计划"},
+            {"SKU": "QTH302A-HP-YSD", "ASIN": "B0BNBKQTJ5", "FNSKU": "X00451V6DB", "Reason": "EXCESSIVE_INSTALLATION", "Customer-Comments": "", "退款根因": "安装过度", "根因优化策略": "未知策略", "行动计划": "未知行动计划"},
+            {"SKU": "QTH260B-HP", "ASIN": "B0DHRSS3T1", "FNSKU": "X004EK656V", "Reason": "ORDERED_WRONG_ITEM", "Customer-Comments": "", "退款根因": "订单错误", "根因优化策略": "未知策略", "行动计划": "未知行动计划"},
+            {"SKU": "QTH1066A-HP-YSD", "ASIN": "B0D7ZLMFMW", "FNSKU": "X004AR0695", "Reason": "NOT_COMPATIBLE", "Customer-Comments": "", "退款根因": "产品不兼容", "根因优化策略": "未知策略", "行动计划": "未知行动计划"},
+            {"SKU": "QTH-969A-HP-YSD", "ASIN": "B0CNYTBDXT", "FNSKU": "X00451UKUB", "Reason": "PART_NOT_COMPATIBLE", "Customer-Comments": "This was way more heavy duty than what I needed.", "退款根因": "产品不兼容", "根因优化策略": "未知策略", "行动计划": "未知行动计划"},
+            {"SKU": "QTH920-HP", "ASIN": "B0DM1V3VTR", "FNSKU": "X004GF8O27", "Reason": "NOT_COMPATIBLE", "Customer-Comments": "", "退款根因": "产品不兼容", "根因优化策略": "未知策略", "行动计划": "未知行动计划"},
+            {"SKU": "QTH629A-HP-YSD", "ASIN": "B0DB7BNBNW", "FNSKU": "X004C20FUX", "Reason": "EXCESSIVE_INSTALLATION", "Customer-Comments": "", "退款根因": "安装过度", "根因优化策略": "未知策略", "行动计划": "未知行动计划"},
+            {"SKU": "QTH723G-Huopo", "ASIN": "B0DF7F78R5", "FNSKU": "X004DGXLA9", "Reason": "DEFECTIVE", "Customer-Comments": "", "退款根因": "产品缺陷", "根因优化策略": "未知策略", "行动计划": "未知行动计划"},
+            {"SKU": "QTH629A-HP-YSD", "ASIN": "B0DB7BNBNW", "FNSKU": "X004C20FUX", "Reason": "UNWANTED_ITEM", "Customer-Comments": "", "退款根因": "用户无理由退货", "根因优化策略": "未知策略", "行动计划": "未知行动计划"},
+            {"SKU": "QTH007A-HP", "ASIN": "B0BJL53NM5", "FNSKU": "X003FR5LYL", "Reason": "UNWANTED_ITEM", "Customer-Comments": "Don÷… end up needing them", "退款根因": "用户无理由退货", "根因优化策略": "未知策略", "行动计划": "未知行动计划"},
+            {"SKU": "QTH344A-HP", "ASIN": "B0CLGW9VS9", "FNSKU": "X0040EKI37", "Reason": "EXCESSIVE_INSTALLATION", "Customer-Comments": "", "退款根因": "安装过度", "根因优化策略": "未知策略", "行动计划": "未知行动计划"},
+            {"SKU": "QTH629A-HP-YSD", "ASIN": "B0DB7BNBNW", "FNSKU": "X004C20FUX", "Reason": "PART_NOT_COMPATIBLE", "Customer-Comments": "Too many", "退款根因": "产品不兼容", "根因优化策略": "未知策略", "行动计划": "未知行动计划"},
+            {"SKU": "QTH629A-HP-YSD", "ASIN": "B0DB7BNBNW", "FNSKU": "X004C20FUX", "Reason": "PART_NOT_COMPATIBLE", "Customer-Comments": "Too many", "退款根因": "产品不兼容", "根因优化策略": "未知策略", "行动计划": "未知行动计划"},
+            {"SKU": "QTH629A-HP-YSD", "ASIN": "B0DB7BNBNW", "FNSKU": "X004C20FUX", "Reason": "UNWANTED_ITEM", "Customer-Comments": "Bought too many", "退款根因": "用户无理由退货", "根因优化策略": "未知策略", "行动计划": "未知行动计划"},
+            {"SKU": "QTH629A-HP-YSD", "ASIN": "B0DB7BNBNW", "FNSKU": "X004C20FUX", "Reason": "UNWANTED_ITEM", "Customer-Comments": "Bought too many", "退款根因": "用户无理由退货", "根因优化策略": "未知策略", "行动计划": "未知行动计划"},
+            {"SKU": "QTH-979A-HP-YSDH", "ASIN": "B0CNYSDW7P", "FNSKU": "X00451WZ3L", "Reason": "NOT_AS_DESCRIBED", "Customer-Comments": "", "退款根因": "描述不符", "根因优化策略": "未知策略", "行动计划": "未知行动计划"},
+            {"SKU": "QTH260B-HP", "ASIN": "B0DHRSS3T1", "FNSKU": "X004EK656V", "Reason": "ORDERED_WRONG_ITEM", "Customer-Comments": "", "退款根因": "订单错误", "根因优化策略": "未知策略", "行动计划": "未知行动计划"},
+            {"SKU": "QTH1036AB-HP", "ASIN": "B0CYT69VVC", "FNSKU": "X0046CWROV", "Reason": "NOT_COMPATIBLE", "Customer-Comments": "", "退款根因": "产品不兼容", "根因优化策略": "未知策略", "行动计划": "未知行动计划"},
+            {"SKU": "QTH980A-HP-YSDH", "ASIN": "B0CLGR2CQP", "FNSKU": "X00451P6IH", "Reason": "EXCESSIVE_INSTALLATION", "Customer-Comments": "", "退款根因": "安装过度", "根因优化策略": "未知策略", "行动计划": "未知行动计划"},
+            {"SKU": "QTH007A-HP", "ASIN": "B0BJL53NM5", "FNSKU": "X003FR5LYL", "Reason": "PART_NOT_COMPATIBLE", "Customer-Comments": "", "退款根因": "产品不兼容", "根因优化策略": "未知策略", "行动计划": "未知行动计划"},
+            {"SKU": "QTH279A-HUOPO", "ASIN": "B0BBMMK3QX", "FNSKU": "X003D7E9N7", "Reason": "PART_NOT_COMPATIBLE", "Customer-Comments": "wrong part", "退款根因": "产品不兼容", "根因优化策略": "未知策略", "行动计划": "未知行动计划"},
+            {"SKU": "QTH007A-HP", "ASIN": "B0BJL53NM5", "FNSKU": "X003FR5LYL", "Reason": "PART_NOT_COMPATIBLE", "Customer-Comments": "ordered 10&#34; need 16&#34; . This Item is in the original package", "退款根因": "产品不兼容", "根因优化策略": "未知策略", "行动计划": "未知行动计划"},
+            {"SKU": "QTH348A-HP", "ASIN": "B0D2CY5M9Y", "FNSKU": "X0047OM6R1", "Reason": "SWITCHEROO", "Customer-Comments": "Wrong tension, strength", "退款根因": "错发/调换", "根因优化策略": "未知策略", "行动计划": "未知行动计划"},
+            {"SKU": "QTH007A-HP", "ASIN": "B0BJL53NM5", "FNSKU": "X003FR5LYL", "Reason": "QUALITY_UNACCEPTABLE", "Customer-Comments": "", "退款根因": "产品质量问题", "根因优化策略": "未知策略", "行动计划": "未知行动计划"},
+            {"SKU": "QTH007A-HP", "ASIN": "B0BJL53NM5", "FNSKU": "X003FR5LYL", "Reason": "PART_NOT_COMPATIBLE", "Customer-Comments": "wrong size", "退款根因": "产品不兼容", "根因优化策略": "未知策略", "行动计划": "未知行动计划"},
+            {"SKU": "QTH690A-HP", "ASIN": "B0DB793HP5", "FNSKU": "X004C258WD", "Reason": "DEFECTIVE", "Customer-Comments": "", "退款根因": "产品缺陷", "根因优化策略": "未知策略", "行动计划": "未知行动计划"},
+            {"SKU": "QTH278A-HP", "ASIN": "B0BG5B6VP9", "FNSKU": "X003EKTODX", "Reason": "NOT_AS_DESCRIBED", "Customer-Comments": "Not original they are replacements", "退款根因": "描述不符", "根因优化策略": "未知策略", "行动计划": "未知行动计划"},
+            {"SKU": "QTH518A-HP-YSD", "ASIN": "B0DB78KHPH", "FNSKU": "X004C221S7", "Reason": "EXCESSIVE_INSTALLATION", "Customer-Comments": "", "退款根因": "安装过度", "根因优化策略": "未知策略", "行动计划": "未知行动计划"},
+            {"SKU": "QTH007A-HP", "ASIN": "B0BJL53NM5", "FNSKU": "X003FR5LYL", "Reason": "EXCESSIVE_INSTALLATION", "Customer-Comments": "dose not fit in y truck box,", "退款根因": "安装过度", "根因优化策略": "未知策略", "行动计划": "未知行动计划"},
+            {"SKU": "QTH971A-HP", "ASIN": "B0CLGWZZ8T", "FNSKU": "X0040F1CPT", "Reason": "EXCESSIVE_INSTALLATION", "Customer-Comments": "", "退款根因": "安装过度", "根因优化策略": "未知策略", "行动计划": "未知行动计划"},
+            {"SKU": "JT014GY-HP", "ASIN": "B0CGDWWQDG", "FNSKU": "X003XVHV83", "Reason": "EXCESSIVE_INSTALLATION", "Customer-Comments": "", "退款根因": "安装过度", "根因优化策略": "未知策略", "行动计划": "未知行动计划"},
+            {"SKU": "JT028BK-HP", "ASIN": "B0DF7H4W96", "FNSKU": "X004DGXL77", "Reason": "UNDELIVERABLE_UNKNOWN", "Customer-Comments": "", "退款根因": "物流异常", "根因优化策略": "未知策略", "行动计划": "未知行动计划"},
+            {"SKU": "JT028BK-HP", "ASIN": "B0DF7H4W96", "FNSKU": "X004DGXL77", "Reason": "UNDELIVERABLE_UNKNOWN", "Customer-Comments": "", "退款根因": "物流异常", "根因优化策略": "未知策略", "行动计划": "未知行动计划"},
+            {"SKU": "JT028BK-HP", "ASIN": "B0DF7H4
