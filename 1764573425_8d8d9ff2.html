@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>退货分析图表</title>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .chart-container {
+            width: 100%;
+            height: 400px;
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+
+<div id="reasonChart" class="chart-container"></div>
+<div id="productChart" class="chart-container"></div>
+
+<script>
+    const rawData = `{"reasons": [{"name": "产品不兼容", "value": 36}, {"name": "用户无理由退货", "value": 9}, {"name": "订单错误", "value": 7}, {"name": "安装过度", "value": 10}, {"name": "产品质量问题", "value": 7}, {"name": "描述不符", "value": 2}, {"name": "产品缺陷", "value": 5}, {"name": "配件缺失", "value": 3}, {"name": "错发/调换", "value": 1}, {"name": "物流异常", "value": 3}], "products": [{"name": "QTH007A-HP", "value": 25}, {"name": "QTH629A-HP-YSD", "value": 6}, {"name": "QTH587A-HP", "value": 5}, {"name": "QTH1127A-HP", "value": 2}, {"name": "QTH345A-HP", "value": 2}, {"name": "QTH1036AB-HP", "value": 3}, {"name": "QTH1033A-HP", "value": 1}, {"name": "QTH390A-HP-YSD", "value": 2}, {"name": "QTH389A-HP-YSD", "value": 1}, {"name": "QTH981A-HP-YSDH", "value": 1}]}`;
+
+    const data = JSON.parse(rawData);
+
+    // 初始化原因图表
+    const reasonChart = echarts.init(document.getElementById('reasonChart'));
+    reasonChart.setOption({
+        title: { text: '退货原因分析', left: 'center' },
+        tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+        xAxis: { type: 'value' },
+        yAxis: {
+            type: 'category',
+            data: data.reasons.reverse().map(item => item.name),
+            inverse: true
+        },
+        series: [{
+            name: '数量',
+            type: 'bar',
+            data: data.reasons.map(item => item.value),
+            itemStyle: { color: '#F46036' }
+        }]
+    });
+
+    // 初始化产品图表
+    const productChart = echarts.init(document.getElementById('productChart'));
+    productChart.setOption({
+        title: { text: '退货产品 TOP 10', left: 'center' },
+        tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+        xAxis: { type: 'value' },
+        yAxis: {
+            type: 'category',
+            data: data.products.reverse().map(item => item.name),
+            inverse: true
+        },
+        series: [{
+            name: '数量',
+            type: 'bar',
+            data: data.products.map(item => item.value),
+            itemStyle: { color: '#2E86C1' }
+        }]
+    });
+</script>
+
+</body>
+</html>
